@@ -1,0 +1,392 @@
+.button {
+    background-color: #4CAF50;   /* 背景颜色为绿色 */
+    color: white;              /* 文字颜色为白色 */
+    display: inline-block;     /* 使按钮呈现为行内块级元素 */
+    padding: 10px 20px;        /* 添加适当的内边距，使按钮更具可点击性 */
+    text-align: center;        /* 文字居中 */
+    vertical-align: middle;    /* 使文字垂直居中 */
+    border: none;              /* 去除按钮的边框 */
+    border-radius: 5px;        /* 可选：设置圆角效果 */
+    cursor: pointer;          /* 鼠标悬停时显示为手指样式 */
+    font-size: 14px;           /* 设置合适的字体大小 */
+}
+
+/* 新添加的CSS规则 */
+#SelectBox {
+    width: 1000px; /* 您可以根据需要调整宽度 */
+    height: 650px; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: white; /* 半透明背景色 */
+    color: black;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000; /* 确保其z-index高于其他元素 */
+    /* 可以根据需要添加更多样式 */
+}
+
+/* 遮罩层样式 */
+#Mask {
+    width: 100%; /* 您可以根据需要调整宽度 */
+    height: 101%; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: rgba(0, 0, 0, 0.8); /* 半透明背景色 */
+    color: white;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 900; /* 确保其z-index高于其他元素 */
+}
+
+/* 表单样式 */
+.query-form {
+    background-color: white;
+    padding: 20px;
+    width: 90%;
+    margin: 20px auto;
+    display: grid;                /* 使用 Grid 布局 */
+    grid-template-columns: repeat(2, 1fr); /* 每行两个输入栏 */
+    gap: 15px;                    /* 设置输入栏之间的间距 */
+}
+
+/* 每个输入栏单独占据一个 Grid 单元格 */
+.query-form .form-group {
+    display: flex;                /* 使用 Flexbox 布局 */
+    align-items: center;          /* 垂直居中对齐 */
+}
+
+.query-form label {
+    width: 35%;                  /* 调整 label 宽度，适配两栏布局 */
+    font-weight: bold;
+    margin-right: 10px;           /* 给 label 和 input 之间增加一些间距 */
+    text-align: right;            /* 将 label 文本右对齐 */
+    line-height: 1.6;             /* 设置 line-height 保证文本垂直居中对齐 */
+}
+
+.query-form input {
+    width: 100%;                 /* 输入框占满剩余空间 */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    box-sizing: border-box;       /* 使 padding 和 border 包含在宽度和高度内 */
+}
+
+/* 让“意见”栏单独占一行 */
+.query-form textarea {
+    grid-column: 1 / -1;          /* 占据整个行 */
+    width: 100%;                 /* 占满父容器宽度 */
+    height: 100px;               /* 固定高度 */
+    padding: 10px;               /* 内边距 */
+    border-radius: 5px;          /* 边框圆角 */
+    border: 1px solid #ddd;      /* 边框样式 */
+    font-size: 14px;             /* 字体大小 */
+    box-sizing: border-box;      /* 包括边框和内边距在宽高内 */
+    line-height: 1.6;            /* 行高，保证文字的可读性 */
+    resize: none;                /* 禁用用户调整大小 */
+    white-space: pre-wrap;
+}
+
+
+
+/* 提交按钮区域 */
+.query-form .form-actions {
+    grid-column: 1 / -1;          /* 提交按钮区域也占据整个行 */
+    text-align: right;
+}
+
+
+.query-form .btn-green {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.query-form .btn-green:hover {
+    background-color: #388E3C;
+}
+
+.query-form .btn-red {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.query-form .btn-red:hover {
+    background-color: darkred;
+}
+
+/* 薪酬标准列表 */
+#salaryList {
+    width: 90%;
+    margin: 30px auto;
+    max-height: 280px;  /* 设置最大高度 */
+    overflow-y: auto;   /* 启用垂直滚动条 */
+}
+
+#h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#salaryItems {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#salaryItems th, #salaryItems td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+#salaryItems th {
+    background-color: #28a745;
+    color: white;
+}
+
+#salaryItems td {
+    background-color: #fff;
+}
+
+#salaryItems .btn-modify,
+#salaryItems .btn-delete {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#salaryItems .btn-modify {
+    background-color: #FFC107;
+    color: white;
+}
+
+#salaryItems .btn-modify:hover {
+    background-color: #FF9800;
+}
+
+#salaryItems .btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+#salaryItems .btn-delete:hover {
+    background-color: #d32f2f;
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+    .query-form {
+        width: 90%;
+    }
+    #salaryList {
+        width: 90%;
+    }
+    #salaryItems th, #salaryItems td {
+        font-size: 12px;
+    }
+}
+
+/* 样式 - 修改按钮 */
+.list-btn-modify {
+    background-color: green;      /* 绿色背景 */
+    color: white;                 /* 白色文字 */
+    padding: 8px 16px;            /* 自定义大小 */
+    border: none;                 /* 去除边框 */
+    border-radius: 4px;           /* 圆角 */
+    cursor: pointer;              /* 鼠标悬停时为手指形状 */
+    font-size: 14px;              /* 可自定义字体大小 */
+    transition: background-color 0.3s ease; /* 添加过渡效果 */
+}
+
+/* 修改按钮悬停时效果 */
+.list-btn-modify:hover {
+    background-color: darkgreen;  /* 悬停时深绿色 */
+}
+
+/* 样式 - 删除按钮 */
+.list-btn-delete {
+    background-color: red;        /* 红色背景 */
+    color: white;                 /* 白色文字 */
+    padding: 8px 16px;            /* 自定义大小 */
+    border: none;                 /* 去除边框 */
+    border-radius: 4px;           /* 圆角 */
+    cursor: pointer;              /* 鼠标悬停时为手指形状 */
+    font-size: 14px;              /* 可自定义字体大小 */
+    transition: background-color 0.3s ease; /* 添加过渡效果 */
+    margin-left: 20px;
+}
+
+/* 删除按钮悬停时效果 */
+.list-btn-delete:hover {
+    background-color: darkred;    /* 悬停时深红色 */
+}
+
+#AddBox {
+    width: 1000px; /* 您可以根据需要调整宽度 */
+    height: 650px; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: white; /* 半透明背景色 */
+    color: black;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000; /* 确保其z-index高于其他元素 */
+    /* 可以根据需要添加更多样式 */
+}
+
+/* 薪酬标准列表 */
+#add-salaryList {
+    width: 90%;
+    margin: 30px auto;
+    max-height: 150px;  /* 设置最大高度 */
+    overflow-y: auto;   /* 启用垂直滚动条 */
+}
+
+#add-salaryItems {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#add-salaryItems th, #add-salaryItems td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+#add-salaryItems th {
+    background-color: #28a745;
+    color: white;
+}
+
+#add-salaryItems td {
+    background-color: #fff;
+}
+
+#UpdateBox {
+    width: 1000px; /* 您可以根据需要调整宽度 */
+    height: 650px; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: white; /* 半透明背景色 */
+    color: black;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000; /* 确保其z-index高于其他元素 */
+    /* 可以根据需要添加更多样式 */
+}
+
+/* 薪酬标准列表 */
+#update-salaryList {
+    width: 90%;
+    margin: 30px auto;
+    max-height: 150px;  /* 设置最大高度 */
+    overflow-y: auto;   /* 启用垂直滚动条 */
+}
+
+#update-salaryItems {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#update-salaryItems th, #update-salaryItems td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+#update-salaryItems th {
+    background-color: #28a745;
+    color: white;
+}
+
+#update-salaryItems td {
+    background-color: #fff;
+}
+
+#DeleteBox {
+    width: 1000px; /* 您可以根据需要调整宽度 */
+    height: 650px; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: white; /* 半透明背景色 */
+    color: black;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000; /* 确保其z-index高于其他元素 */
+    /* 可以根据需要添加更多样式 */
+}
+
+/* 薪酬标准列表 */
+#delete-salaryList {
+    width: 90%;
+    margin: 30px auto;
+    max-height: 150px;  /* 设置最大高度 */
+    overflow-y: auto;   /* 启用垂直滚动条 */
+}
+
+#delete-salaryItems {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#delete-salaryItems th, #delete-salaryItems td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+#delete-salaryItems th {
+    background-color: #28a745;
+    color: white;
+}
+
+#delete-salaryItems td {
+    background-color: #fff;
+}

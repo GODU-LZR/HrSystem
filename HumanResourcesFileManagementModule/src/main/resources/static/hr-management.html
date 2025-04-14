@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人力资源档案管理模块</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 主容器 */
+        .container {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .container h2 {
+            font-size: 28px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* 模块信息区 */
+        .modules {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .module-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .module-card h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .module-card .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .module-card .btn:hover {
+            background-color: #388E3C;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .module-card {
+                width: 90%;
+            }
+        }
+    </style>
+    <script>
+        // 退出登录逻辑
+        async function logoutUser() {
+            try {
+                const response = await fetch("http://127.0.0.1:8080/user/logout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include"  // 确保携带 cookie
+                });
+
+                if (response.ok) {
+                    alert("退出成功！");
+                    // 跳转到登录页面
+                    window.location.href = "http://127.0.0.1:8080/public/login.html";  // 确保跳转到正确的页面
+                } else {
+                    alert("退出失败，请稍后重试！");
+                }
+            } catch (error) {
+                console.error("退出失败:", error);
+                alert("退出失败，请稍后重试！");
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>人力资源档案管理模块</h1>
+        <button class="logout-btn" onclick="logoutUser()">退出</button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h2>人力资源档案管理模块</h2>
+        <p>
+            在本模块中，您可以完成人事管理的相关操作。
+        </p>
+
+        <!-- 模块信息展示 -->
+        <div class="modules">
+
+            <div class="module-card">
+                <h3>人事专员</h3>
+                <p>管理员工档案，更新员工信息。</p>
+                <a href="hr-specialist.html" class="btn">进入模块</a>
+            </div>
+
+            <div class="module-card">
+                <h3>人事经理</h3>
+                <p>审核员工档案，进行人事决策。</p>
+                <a href="/hr-manager.html" class="btn">进入模块</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

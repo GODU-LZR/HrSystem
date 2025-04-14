@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人事专员模块</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 主容器 */
+        .container {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .container h2 {
+            font-size: 28px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .modules {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .module-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .module-card .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .module-card .btn:hover {
+            background-color: #388E3C;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* 保证居中 */
+            width: 80%;
+            height: 80%;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
+            /* 添加平滑过渡效果 */
+        }
+
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 80%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        .modal-header h5 {
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        /* 表单区域 */
+        .form-group-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* 机构表单 */
+        .left-side {
+            width: 48%;
+            /* 占模态框的左半宽 */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* 图片上传区域 */
+        .right-side {
+            width: 48%;
+            /* 占模态框的右半宽 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .image-preview-container {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            border: 2px dashed #4CAF50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-image: url('images/picture.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+        }
+
+        .upload-btn {
+            position: absolute;
+            bottom: -20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-btn:hover {
+            background-color: #388E3C;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        /* 全宽表单字段 */
+        .full-width {
+            width: 100%;
+        }
+
+        /* 保存和取消按钮 */
+        .btn-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-group input {
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 10px;
+            width: 31%;
+        }
+
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn-save:hover {
+            background-color: #388E3C;
+        }
+
+        .btn-query {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 2.5px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-query:hover {
+            background-color: #388E3C;
+        }
+
+        .btn-cancel {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background-color: #d32f2f;
+        }
+
+        .form-group-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .left-side {
+            width: 25%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .right-side {
+            width: 75%;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: #f9f9f9;
+        }
+    </style>
+    <script>
+
+        async function loadCurrentUsername() {
+            try {
+                // 发送请求到后端获取当前用户名
+                const response = await fetch('/user/current-username', {
+                    method: 'GET'
+                });
+
+                // 检查响应状态
+                if (response.ok) {
+                    const username = await response.text(); // 获取返回的用户名字符串
+                    console.log("当前登录用户名:", username);
+
+                    // 将用户名设置到页面的 "登记人" 和 "变更人" 输入框中
+                    const registrantInput = document.getElementById('Registrant');
+                    const changePersonInput = document.getElementById('changePerson');
+
+                    if (registrantInput) {
+                        registrantInput.value = username;
+                    }
+                    if (changePersonInput) {
+                        changePersonInput.value = username;
+                    }
+                } else if (response.status === 401) {
+                    console.warn('未登录，无法获取当前用户名');
+                    alert('当前未登录，请先登录系统！');
+                } else {
+                    console.error('获取当前用户名失败:', response.status, response.statusText);
+                    alert('获取当前用户名失败，请稍后再试！');
+                }
+            } catch (error) {
+                console.error('请求当前用户名时发生异常:', error);
+                alert('系统发生错误，请联系管理员！');
+            }
+        }
+        // 在 DOM 加载完成后，为所有文件输入添加事件监听器
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadInputs = document.querySelectorAll('.upload-input');
+            uploadInputs.forEach(input => {
+                input.addEventListener('change', updatePreview);
+            });
+        });
+
+        function registration() {
+            const modal = document.getElementById("archiveModal");
+
+            const employee = {
+                name: modal.querySelector("#name").value,
+                gender: modal.querySelector("#gender").value,
+                email: modal.querySelector("#email").value,
+                phone: modal.querySelector("#phone").value,
+                qq: modal.querySelector("#qq").value,
+                mobile: modal.querySelector("#mobile").value,
+                address: modal.querySelector("#address").value,
+                postalCode: modal.querySelector("#postalCode").value,
+                nationality: modal.querySelector("#nationality").value,
+                birthday: formatDate(modal.querySelector("#birthday").value),
+                ethnicity: modal.querySelector("#ethnicity").value,
+                religion: modal.querySelector("#religion").value,
+                politicalAffiliation: modal.querySelector("#politicalAffiliation").value,
+                idNumber: modal.querySelector("#idNumber").value,
+                socialSecurityNumber: modal.querySelector("#socialSecurityNumber").value,
+                age: parseInt(modal.querySelector("#age").value, 10),
+                education: modal.querySelector("#education").value,
+                account: modal.querySelector("#account").value,
+                registerTime: formatDate(modal.querySelector("#registerTime").value),
+                resume: modal.querySelector("#resume").value,
+                familyInfo: modal.querySelector("#familyInfo").value,
+                remarks: modal.querySelector("#remarks").value,
+                orgLevel1: modal.querySelector("#orgLevel1").value,
+                orgLevel2: modal.querySelector("#orgLevel2").value,
+                orgLevel3: modal.querySelector("#orgLevel3").value,
+                positionCategory: modal.querySelector("#positionCategory").value,
+                positionName: modal.querySelector("#positionName").value,
+                registrant: modal.querySelector("#Registrant").value,
+                salaryStander: modal.querySelector("#salaryStander").value,
+            };
+
+            // 使用类选择器选择当前模态框中的文件输入
+            const photoInput = modal.querySelector(".upload-input");
+            if (photoInput.files.length > 0) {
+                const photoFile = photoInput.files[0];
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    employee.employeePhotoUrl = reader.result; // 发送完整的Data URL
+                    sendEmployeeData(employee);
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                sendEmployeeData(employee);
+            }
+        }
+
+        function updateModalTransform(modal) {
+
+
+            // 获取当前的 transform 样式
+            const currentTransform = window.getComputedStyle(modal).transform;
+
+            // 检查 transform 样式是否为 'none'（表示没有 transform）
+            if (currentTransform === 'matrix(1, 0, 0, 1, 0, 0)') {
+                // 如果是默认值，说明 transform 没有应用，直接设置新的 transform
+                modal.style.transform = 'translate(-40%, -60%)';
+            } else {
+                // 如果 transform 存在（可能是 matrix 或其他值），更新为新的 translate
+                modal.style.transform = 'translate(-40%, -60%)';
+            }
+        }
+
+
+        function sendEmployeeData(employee) {
+            fetch('/employee', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // 正确的请求头
+                },
+                body: JSON.stringify(employee)  // 发送 JSON 字符串
+            })
+                .then(response => response.json())  // 处理返回的 JSON 数据
+                .then(data => {
+                    if (data.status === "登记成功") {
+                        alert('登记成功！');
+                        closeModal(); // 关闭模态框
+                    } else {
+                        alert('登记失败，请重试！');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('请求失败，请检查网络连接。');
+                });
+        }
+
+        // 格式化日期为 yyyy-MM-dd'T'HH:mm:ss 格式
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        }
+
+        // 查询员工信息并填充到模态框
+        function searchEmployee() {
+
+
+            // 获取 changeModal 模态框容器
+            const modal = document.getElementById("changeModal");
+
+            // 获取档案编号
+            const archiveId = modal.querySelector('#archiveId').value;
+
+            // 校验档案编号是否为空
+            if (!archiveId) {
+                alert("请先输入档案编号");
+                return;
+            }
+
+            // 创建 employeejson 对象，传递 archiveId 进行查询
+            const employeejson = {
+                archiveId: archiveId
+            };
+
+            // 发送 GET 请求到后端接口
+            fetch('/employee/query', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(employeejson)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const employee = data[0];  // 假设查询结果是一个数组，取第一个员工信息
+
+                        // 填充模态框数据
+                        modal.querySelector("#archiveNumber").value = employee.archiveId;
+                        modal.querySelector("#orgLevel1").value = employee.orgLevel1;
+                        modal.querySelector("#orgLevel2").value = employee.orgLevel2;
+                        modal.querySelector("#orgLevel3").value = employee.orgLevel3;
+                        modal.querySelector("#positionCategory").value = employee.positionCategory;
+                        modal.querySelector("#positionName").value = employee.positionName;
+                        modal.querySelector("#salaryStander").value = employee.salaryStander;
+                        //modal.querySelector("#Registrant").value = employee.Registrant;
+                        modal.querySelector("#name").value = employee.name;
+                        modal.querySelector("#gender").value = employee.gender;
+                        modal.querySelector("#email").value = employee.email;
+                        modal.querySelector("#phone").value = employee.phone;
+                        modal.querySelector("#qq").value = employee.qq;
+                        modal.querySelector("#mobile").value = employee.mobile;
+                        modal.querySelector("#address").value = employee.address;
+                        modal.querySelector("#postalCode").value = employee.postalCode;
+                        modal.querySelector("#nationality").value = employee.nationality;
+                        modal.querySelector("#birthday").value = employee.birthday.split('T')[0];  // 格式化日期
+                        modal.querySelector("#ethnicity").value = employee.ethnicity;
+                        modal.querySelector("#religion").value = employee.religion;
+                        modal.querySelector("#politicalAffiliation").value = employee.politicalAffiliation;
+                        modal.querySelector("#idNumber").value = employee.idNumber;
+                        modal.querySelector("#socialSecurityNumber").value = employee.socialSecurityNumber;
+                        modal.querySelector("#age").value = employee.age;
+                        modal.querySelector("#education").value = employee.education;
+                        modal.querySelector("#account").value = employee.account;
+                        modal.querySelector("#registerTime").value = employee.registerTime;  // 格式化日期
+                        modal.querySelector("#resume").value = employee.resume;
+                        modal.querySelector("#familyInfo").value = employee.familyInfo;
+                        modal.querySelector("#remarks").value = employee.remarks;
+
+                        // 如果员工有照片，展示预览
+                        if (employee.employeePhotoUrl) {
+                            const preview = modal.querySelector('.image-preview-container');
+                            if (preview) {
+                                preview.style.backgroundImage = `url(${employee.employeePhotoUrl})`;  // 使用相对路径展示图片
+                            }
+                        }
+                    } else {
+                        alert('未找到该档案编号的员工信息');
+                    }
+                })
+                .catch(error => {
+                    console.error('查询员工信息失败', error);
+                    alert('查询员工信息失败，请稍后再试');
+                });
+
+        }
+
+        function saveEmployeeInfo() {
+            // 获取 changeModal 模态框容器
+            const modal = document.getElementById("changeModal");
+
+            const employee = {
+                // 获取模态框中的修改值
+                archiveId: modal.querySelector("#archiveNumber").value,  // 员工 ID 用于查询修改
+                name: modal.querySelector("#name").value,
+                gender: modal.querySelector("#gender").value,
+                email: modal.querySelector("#email").value,
+                phone: modal.querySelector("#phone").value,
+                qq: modal.querySelector("#qq").value,
+                mobile: modal.querySelector("#mobile").value,
+                address: modal.querySelector("#address").value,
+                postalCode: modal.querySelector("#postalCode").value,
+                nationality: modal.querySelector("#nationality").value,
+                birthday: formatDate(modal.querySelector("#birthday").value),
+                ethnicity: modal.querySelector("#ethnicity").value,
+                religion: modal.querySelector("#religion").value,
+                politicalAffiliation: modal.querySelector("#politicalAffiliation").value,
+                idNumber: modal.querySelector("#idNumber").value,
+                socialSecurityNumber: modal.querySelector("#socialSecurityNumber").value,
+                age: parseInt(modal.querySelector("#age").value, 10),
+                education: modal.querySelector("#education").value,
+                account: modal.querySelector("#account").value,
+                registerTime: formatDate(modal.querySelector("#registerTime").value),
+                resume: modal.querySelector("#resume").value,
+                familyInfo: modal.querySelector("#familyInfo").value,
+                remarks: modal.querySelector("#remarks").value,
+                changePerson: modal.querySelector("#changePerson").value,
+                salaryStander: modal.querySelector("#salaryStander").value,
+            };
+
+            // 使用类选择器选择当前模态框中的文件输入
+            const photoInput = modal.querySelector(".upload-input");
+            if (photoInput.files.length > 0) {
+                const photoFile = photoInput.files[0];
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    employee.employeePhotoUrl = reader.result; // 发送完整的Data URL
+                    sendEmployeeUpdateData(employee);  // 调用发送数据的函数
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                sendEmployeeUpdateData(employee);  // 如果没有新照片，直接发送数据
+            }
+        }
+        // 发送修改后的员工数据到后端
+        function sendEmployeeUpdateData(employee) {
+            fetch('/employee/update', {
+                method: 'PUT',  // 使用 PUT 请求进行更新
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employee),  // 将员工数据转为 JSON 字符串发送
+            })
+                .then(response => response.json())  // 处理返回的 JSON 数据
+                .then(data => {
+                    if (data.status === "变更成功") {
+                        alert('人力资源档案变更成功！');
+                        closeModal();  // 关闭模态框
+                    } else {
+                        alert('人力资源档案变更失败，请重试！');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('请求失败，请检查网络连接。');
+                });
+        }
+
+        // 获取当前时间并格式化为 'yyyy-mm-ddThh:mm:ss' 格式
+        function updateCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份是从 0 开始的，+1 是为了调整
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            // 构造符合 'yyyy-mm-ddThh:mm:ss' 格式的时间字符串
+            const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+            // 设置 input 元素的值
+            document.getElementById("registerTime").value = dateTimeString;
+        }
+
+        // 每秒更新一次时间
+        setInterval(updateCurrentDateTime, 1000);
+
+        // 页面加载时立即更新一次时间，确保页面加载时就有时间显示
+        window.onload = updateCurrentDateTime;
+
+        // 外部变量用于存储职位分类的 positionName 与 positionId 的映射
+        const positionIdMap = {};
+
+        async function openModal(modalId) {
+            // 隐藏所有模态框
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(m => m.style.display = 'none');
+
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+
+            loadCurrentUsername();
+
+            modal.style.display = "flex";
+
+            // 根据不同的modalId，处理不同的下拉框ID
+            let orgLevel1Select, orgLevel2Select, orgLevel3Select;
+
+            if (modalId === 'queryModal') {
+                // 查询模态框使用的是orgLevel1Query、orgLevel2Query、orgLevel3Query
+                orgLevel1Select = modal.querySelector('#orgLevel1Query');
+                orgLevel2Select = modal.querySelector('#orgLevel2Query');
+                orgLevel3Select = modal.querySelector('#orgLevel3Query');
+            } else {
+                // 其他模态框使用orgLevel1、orgLevel2、orgLevel3
+                orgLevel1Select = modal.querySelector('#orgLevel1');
+                orgLevel2Select = modal.querySelector('#orgLevel2');
+                orgLevel3Select = modal.querySelector('#orgLevel3');
+            }
+
+            if (!orgLevel1Select || !orgLevel2Select || !orgLevel3Select) {
+                // 没有机构选择下拉栏，直接返回
+                return;
+            }
+
+            // 确保这些元素是<select>，如原先是<input>需要在HTML中改成<select>但保留ID不变
+            // 重置下拉框初始状态
+            orgLevel1Select.innerHTML = '<option value="">请选择I级机构</option>';
+            orgLevel2Select.innerHTML = '<option value="">请选择II级机构</option>';
+            orgLevel3Select.innerHTML = '<option value="">请选择III级机构</option>';
+            orgLevel2Select.disabled = true;
+            orgLevel3Select.disabled = true;
+
+            // 定义加载机构函数
+            async function loadLevelData(level, parentId) {
+                const url = parentId ? `/organizations/level/${level}?parentId=${parentId}` : `/organizations/level/${level}`;
+                const res = await fetch(url);
+                return await res.json();
+            }
+
+            // 加载I级机构
+            const level1Data = await loadLevelData(1);
+            level1Data.forEach(org => {
+                const option = document.createElement('option');
+                option.value = org.orgName;
+                option.textContent = org.orgName;
+                orgLevel1Select.appendChild(option);
+            });
+
+            // 当用户选择I级机构时加载II级机构
+            orgLevel1Select.onchange = async () => {
+                const selectedOrgName = orgLevel1Select.value;
+                const selectedOrg = level1Data.find(o => o.orgName === selectedOrgName);
+                const selectedOrgId = selectedOrg ? selectedOrg.orgId : '';
+
+                orgLevel2Select.innerHTML = '<option value="">请选择II级机构</option>';
+                orgLevel3Select.innerHTML = '<option value="">请选择III级机构</option>';
+                orgLevel2Select.disabled = true;
+                orgLevel3Select.disabled = true;
+
+                if (selectedOrgId) {
+                    const level2Data = await loadLevelData(2, selectedOrgId);
+                    level2Data.forEach(org => {
+                        const option = document.createElement('option');
+                        option.value = org.orgName;
+                        option.textContent = org.orgName;
+                        orgLevel2Select.appendChild(option);
+                    });
+                    orgLevel2Select.disabled = false;
+                }
+            };
+
+            // 当用户选择II级机构时加载III级机构
+            orgLevel2Select.onchange = async () => {
+                const selectedOrgName = orgLevel2Select.value;
+                const selectedOrgL1Name = orgLevel1Select.value;
+                const selectedOrgL1 = level1Data.find(o => o.orgName === selectedOrgL1Name);
+                const selectedOrgIdL1 = selectedOrgL1 ? selectedOrgL1.orgId : '';
+
+                const level2Data = await loadLevelData(2, selectedOrgIdL1);
+                const selectedOrgL2 = level2Data.find(o => o.orgName === selectedOrgName);
+                const selectedOrgIdL2 = selectedOrgL2 ? selectedOrgL2.orgId : '';
+
+                orgLevel3Select.innerHTML = '<option value="">请选择III级机构</option>';
+                orgLevel3Select.disabled = true;
+
+                if (selectedOrgIdL2) {
+                    const level3Data = await loadLevelData(3, selectedOrgIdL2);
+                    level3Data.forEach(org => {
+                        const option = document.createElement('option');
+                        option.value = org.orgName;
+                        option.textContent = org.orgName;
+                        orgLevel3Select.appendChild(option);
+                    });
+                    orgLevel3Select.disabled = false;
+                }
+            };
+
+            // === 动态加载职位分类与职位名称选项逻辑 ===
+            const positionCategorySelect = modal.querySelector(modalId === 'queryModal' ? '#positionCategoryQuery' : '#positionCategory');
+            const positionNameSelect = modal.querySelector(modalId === 'queryModal' ? '#positionNameQuery' : '#positionName');
+
+            if (positionCategorySelect && positionNameSelect) {
+                // 初始化职位分类
+                positionCategorySelect.innerHTML = '<option value="">请选择职位分类</option>';
+                positionNameSelect.innerHTML = '<option value="">请选择职位名称</option>';
+                positionNameSelect.disabled = true;
+
+                try {
+                    const response = await fetch('/positions/position-types'); // 获取职位类型列表
+                    if (response.ok) {
+                        const positionTypes = await response.json();
+                        // 清空 positionIdMap
+                        Object.keys(positionIdMap).forEach(key => delete positionIdMap[key]);
+
+                        // 填充职位分类下拉框并更新 positionIdMap
+                        positionTypes.forEach(pos => {
+                            positionIdMap[pos.positionName] = pos.positionId; // 将职位名称与 ID 对应存储
+                            const option = document.createElement('option');
+                            option.value = pos.positionName; // 使用职位分类名称作为 value
+                            option.textContent = pos.positionName; // 职位分类名称
+                            positionCategorySelect.appendChild(option);
+                        });
+                    } else {
+                        console.error('加载职位分类失败:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('请求职位分类时发生异常:', error);
+                }
+
+                // 绑定职位分类选择事件，加载对应职位名称
+                positionCategorySelect.onchange = async () => {
+                    const selectedCategoryName = positionCategorySelect.value;
+                    positionNameSelect.innerHTML = '<option value="">请选择职位名称</option>';
+                    positionNameSelect.disabled = true;
+
+                    if (selectedCategoryName) {
+                        // 根据选中的职位分类名称从 positionIdMap 获取对应的 positionId
+                        const selectedCategoryId = positionIdMap[selectedCategoryName];
+
+                        if (selectedCategoryId) {
+                            try {
+                                const response = await fetch(`/positions/by-parent/${selectedCategoryId}`);
+                                if (response.ok) {
+                                    const positionNames = await response.json();
+                                    positionNames.forEach(pos => {
+                                        const option = document.createElement('option');
+                                        option.value = pos.positionName; // 使用职位名称作为 value
+                                        option.textContent = pos.positionName;
+                                        positionNameSelect.appendChild(option);
+                                    });
+                                    positionNameSelect.disabled = false;
+                                } else {
+                                    console.error('加载职位名称失败:', response.statusText);
+                                }
+                            } catch (error) {
+                                console.error('请求职位名称时发生异常:', error);
+                            }
+                        } else {
+                            console.error('无法找到对应的职位分类 ID');
+                        }
+                    }
+                };
+            }
+            // === 动态加载薪资标准选项逻辑 ===
+            const salaryStanderSelect = modal.querySelector('#salaryStander');
+            if (salaryStanderSelect) {
+                try {
+                    const response = await fetch('/employee/salary-standards');
+                    if (response.ok) {
+                        const salaryStandards = await response.json();
+                        salaryStanderSelect.innerHTML = '<option value="">请选择薪酬标准</option>';
+                        for (const name of Object.values(salaryStandards)) {
+                            const option = document.createElement('option');
+                            option.value = name;
+                            option.textContent = name;
+                            salaryStanderSelect.appendChild(option);
+                        }
+                    } else {
+                        console.error('加载薪资标准失败:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('请求薪资标准时发生异常:', error);
+                }
+            }
+        }
+        // 关闭指定模态框并清除相关数据
+        function closeModal(modalId) {
+            if (modalId) {
+                // 关闭指定的模态框
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+
+                // 根据模态框类型执行不同的清理操作
+                if (modalId === 'queryModal') {
+                    // 清空查询模态框中的输入字段
+                    const queryModal = document.getElementById("queryModal");
+                    queryModal.querySelectorAll('input').forEach(input => input.value = '');
+
+                    // 清空查询结果表格
+                    const tableBody = document.querySelector("#employeeTable tbody");
+                    tableBody.innerHTML = "";
+                } else if (modalId === 'detailModal') {
+                    // 清空详细信息模态框中的字段和图片预览
+                    const detailModal = document.getElementById("detailModal");
+                    detailModal.querySelectorAll('input, select, textarea').forEach(field => {
+                        if (field.type === "file") {
+                            field.value = "";
+                        } else {
+                            field.value = "";
+                        }
+                    });
+                    // 重置图片预览为默认图片
+                    const detailImagePreview = detailModal.querySelector("#detailImagePreview");
+                    if (detailImagePreview) {
+                        detailImagePreview.style.backgroundImage = `url('images/picture.jpg')`;
+                    }
+                }
+            } else {
+                // 如果没有传入模态框 ID，关闭所有模态框并清理所有数据
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => modal.style.display = 'none');
+                // 获取 changeModal 模态框容器
+                const modal = document.getElementById("changeModal");
+                // 获取当前的 transform 样式
+                const currentTransform = window.getComputedStyle(modal).transform;
+
+                // 检查 transform 样式是否为 'none'（表示没有 transform）
+                if (currentTransform === 'matrix(1, 0, 0, 1, 0, 0)') {
+                    // 如果是默认值，说明 transform 没有应用，直接设置新的 transform
+                    modal.style.transform = 'translate(-50%, -50%)';
+                } else {
+                    // 如果 transform 存在（可能是 matrix 或其他值），更新为新的 translate
+                    modal.style.transform = 'translate(-50%, -50%)';
+                }
+                // 清空所有表单字段的值
+                const formFields = document.querySelectorAll("input, select, textarea");
+                formFields.forEach(field => {
+                    if (field.type === "file") {
+                        field.value = "";  // 清除文件输入
+                    } else if (field.type === "radio" || field.type === "checkbox") {
+                        field.checked = false;  // 清除单选框和复选框的选中状态
+                    } else {
+                        field.value = "";  // 清除文本框或下拉框的值
+                    }
+                });
+
+                // 清除所有图片预览并设置为默认图片
+                const imagePreviews = document.querySelectorAll('.image-preview-container'); // 选择所有的图片预览容器
+                imagePreviews.forEach(preview => {
+                    preview.style.backgroundImage = 'url("images/picture.jpg")';  // 设置为默认图片
+                });
+            }
+        }
+
+        function updatePreview(event) {
+            console.log("updatePreview called"); // 调试信息
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // 找到当前文件输入所在的 .image-preview-container 容器
+                    const previewContainer = event.target.closest('.image-preview-container');
+                    if (previewContainer) {
+                        previewContainer.style.backgroundImage = `url(${e.target.result})`;
+                        console.log("Image preview updated"); // 调试信息
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateModalTransform(modal) {
+
+
+            // 获取当前的 transform 样式
+            const currentTransform = window.getComputedStyle(modal).transform;
+
+            // 检查 transform 样式是否为 'none'（表示没有 transform）
+            if (currentTransform === 'matrix(1, 0, 0, 1, 0, 0)') {
+                // 如果是默认值，说明 transform 没有应用，直接设置新的 transform
+                modal.style.transform = 'translate(-40%, -60%)';
+            } else {
+                // 如果 transform 存在（可能是 matrix 或其他值），更新为新的 translate
+                modal.style.transform = 'translate(-40%, -60%)';
+            }
+        }
+
+        let employeeList = []; // 存储查询结果的全局变量
+
+        // 实现条件查询功能
+        function queryEmployeeData() {
+            // 获取查询模态框容器
+            const modal = document.getElementById("queryModal");
+
+            // 获取查询条件的值
+            const orgLevel1 = modal.querySelector("#orgLevel1Query").value.trim();
+            const orgLevel2 = modal.querySelector("#orgLevel2Query").value.trim();
+            const orgLevel3 = modal.querySelector("#orgLevel3Query").value.trim();
+            const positionCategory = modal.querySelector("#positionCategoryQuery").value.trim();
+            const positionName = modal.querySelector("#positionNameQuery").value.trim();
+            const registerTime = modal.querySelector("#startDate").value;
+            const deadlineTime = modal.querySelector("#endDate").value;
+
+            // 构建查询对象，仅包含非空的条件
+            const queryObject = {};
+            if (orgLevel1) queryObject.orgLevel1 = orgLevel1;
+            if (orgLevel2) queryObject.orgLevel2 = orgLevel2;
+            if (orgLevel3) queryObject.orgLevel3 = orgLevel3;
+            if (positionCategory) queryObject.positionCategory = positionCategory;
+            if (positionName) queryObject.positionName = positionName;
+            if (registerTime) queryObject.registerTime =  formatDate(registerTime) ; // 需要后端支持
+            if (deadlineTime) queryObject.deadlineTime = formatDate(deadlineTime) ;     // 需要后端支持
+
+            // 存储查询条件到employee对象
+            const employee = { ...queryObject };
+
+            // 发送 PUT 请求到后端查询接口
+            fetch('/employee/query', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(employee)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络响应不是OK');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 清空现有的表格内容
+                    const tableBody = document.querySelector("#employeeTable tbody");
+                    tableBody.innerHTML = "";
+
+                    // 更新全局变量
+                    employeeList = data;
+
+                    if (data.length === 0) {
+                        const row = document.createElement("tr");
+                        const cell = document.createElement("td");
+                        cell.colSpan = 8;
+                        cell.textContent = "未找到符合条件的员工信息";
+                        cell.style.textAlign = "center";
+                        row.appendChild(cell);
+                        tableBody.appendChild(row);
+                        return;
+                    }
+
+                    // 遍历查询结果，填充表格
+                    data.forEach(employee => {
+                        const row = document.createElement("tr");
+
+                        // 档案编号
+                        const archiveNumberCell = document.createElement("td");
+                        archiveNumberCell.textContent = employee.archiveId;
+                        row.appendChild(archiveNumberCell);
+
+                        // 姓名
+                        const nameCell = document.createElement("td");
+                        nameCell.textContent = employee.name;
+                        row.appendChild(nameCell);
+
+                        // 性别
+                        const genderCell = document.createElement("td");
+                        genderCell.textContent = employee.gender === 'male' ? '男' : (employee.gender === 'female' ? '女' : '');
+                        row.appendChild(genderCell);
+
+                        // 一级机构
+                        const orgLevel1Cell = document.createElement("td");
+                        orgLevel1Cell.textContent = employee.orgLevel1;
+                        row.appendChild(orgLevel1Cell);
+
+                        // 二级机构
+                        const orgLevel2Cell = document.createElement("td");
+                        orgLevel2Cell.textContent = employee.orgLevel2;
+                        row.appendChild(orgLevel2Cell);
+
+                        // 三级机构
+                        const orgLevel3Cell = document.createElement("td");
+                        orgLevel3Cell.textContent = employee.orgLevel3;
+                        row.appendChild(orgLevel3Cell);
+
+                        // 职位名称
+                        const positionNameCell = document.createElement("td");
+                        positionNameCell.textContent = employee.positionName;
+                        row.appendChild(positionNameCell);
+
+                        // 查看详情按钮
+                        const viewButtonCell = document.createElement("td");
+                        const viewButton = document.createElement("button");
+                        viewButton.className = "btn-query";
+                        viewButton.textContent = "查看详细";
+                        viewButton.onclick = () => viewDetails(employee.archiveId);
+                        viewButtonCell.appendChild(viewButton);
+                        row.appendChild(viewButtonCell);
+
+                        // 添加行到表格
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('查询员工信息失败:', error);
+                    alert('查询员工信息失败，请稍后再试');
+                });
+        }
+
+        function viewDetails(archiveNumber) {
+            // 根据archiveNumber在全局employeeList中查找对应的员工
+            const employee = employeeList.find(emp => emp.archiveId === archiveNumber);
+
+            if (!employee) {
+                alert('未找到该档案编号的员工信息');
+                return;
+            }
+
+            // 填充详细信息模态框的数据
+            const detailModal = document.getElementById("detailModal");
+
+            detailModal.querySelector("#detailArchiveNumber").value = employee.archiveId || '';
+            detailModal.querySelector("#detailOrgLevel1").value = employee.orgLevel1 || '';
+            detailModal.querySelector("#detailOrgLevel2").value = employee.orgLevel2 || '';
+            detailModal.querySelector("#detailOrgLevel3").value = employee.orgLevel3 || '';
+            detailModal.querySelector("#detailPositionCategory").value = employee.positionCategory || '';
+            detailModal.querySelector("#detailPositionName").value = employee.positionName || '';
+            detailModal.querySelector("#detailSalaryStander").value = employee.salaryStander || '';
+
+            detailModal.querySelector("#detailName").value = employee.name || '';
+            detailModal.querySelector("#detailGender").value = employee.gender || '';
+            detailModal.querySelector("#detailEmail").value = employee.email || '';
+            detailModal.querySelector("#detailPhone").value = employee.phone || '';
+            detailModal.querySelector("#detailQQ").value = employee.qq || '';
+            detailModal.querySelector("#detailMobile").value = employee.mobile || '';
+            detailModal.querySelector("#detailAddress").value = employee.address || '';
+            detailModal.querySelector("#detailPostalCode").value = employee.postalCode || '';
+            detailModal.querySelector("#detailNationality").value = employee.nationality || '';
+            detailModal.querySelector("#detailBirthday").value = employee.birthday ? employee.birthday.split('T')[0] : '';
+            detailModal.querySelector("#detailEthnicity").value = employee.ethnicity || '';
+            detailModal.querySelector("#detailReligion").value = employee.religion || '';
+            detailModal.querySelector("#detailPoliticalAffiliation").value = employee.politicalAffiliation || '';
+            detailModal.querySelector("#detailIdNumber").value = employee.idNumber || '';
+            detailModal.querySelector("#detailSocialSecurityNumber").value = employee.socialSecurityNumber || '';
+            detailModal.querySelector("#detailAge").value = employee.age || '';
+            detailModal.querySelector("#detailEducation").value = employee.education || '';
+            detailModal.querySelector("#detailAccount").value = employee.account || '';
+            detailModal.querySelector("#detailRegisterTime").value = employee.registerTime || '';
+            detailModal.querySelector("#detailResume").value = employee.resume || '';
+            detailModal.querySelector("#detailFamilyInfo").value = employee.familyInfo || '';
+            detailModal.querySelector("#detailRemarks").value = employee.remarks || '';
+
+            // 展示员工照片
+            const detailImagePreview = detailModal.querySelector("#detailImagePreview");
+            if (employee.employeePhotoUrl) {
+                detailImagePreview.style.backgroundImage = `url(${employee.employeePhotoUrl})`;
+            } else {
+                detailImagePreview.style.backgroundImage = `url('images/picture.jpg')`; // 默认图片
+            }
+            updateModalTransform(detailModal);
+            // 显示详细信息模态框
+            detailModal.style.display = "block";
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>人力资源档案管理模块</h1>
+        <button class="logout-btn" onclick="logoutUser()">退出</button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h2>人事专员模块</h2>
+        <p>
+            在本模块中，您可以完成管理员工档案，更新员工信息的相关操作。
+        </p>
+
+        <!-- 模块信息展示 -->
+        <div class="modules">
+            <!-- 人力资源档案登记 -->
+            <div class="module-card">
+                <h3>人力资源档案登记</h3>
+                <p>管理员工档案，更新员工信息。</p>
+                <button class="btn" onclick="openModal('archiveModal')">开始业务</button>
+            </div>
+
+            <!-- 人力资源档案变更 -->
+            <div class="module-card">
+                <h3>人力资源档案变更</h3>
+                <p>审核员工档案，进行人事决策。</p>
+                <button class="btn" onclick="openModal('changeModal')">开始业务</button>
+            </div>
+
+            <!-- 人力资源档案查询 -->
+            <div class="module-card">
+                <h3>人力资源档案查询</h3>
+                <p>审核员工档案，进行人事决策。</p>
+                <button class="btn" onclick="openModal('queryModal')">开始业务</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 人力资源档案登记模态框 -->
+    <div class="modal" id="archiveModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>您正在做的业务是: 人力资源/人力资源档案管理/人力资源档案登记</h5>
+                <!-- 按钮组 -->
+                <div class="btn-group">
+                    <button class="btn-save" onclick="registration()">保存</button>
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                </div>
+            </div>
+
+            <!-- 表单字段和图片上传容器 -->
+            <div class="form-group-container">
+                <!-- 左侧：机构表单 -->
+                <div class="left-side">
+                    <div class="form-group">
+                        <label for="orgLevel1">I级机构</label>
+                        <select id="orgLevel1">
+                            <option value="">请选择I级机构</option>
+                            <!-- 动态填充I级机构 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="orgLevel2">II级机构</label>
+                        <select id="orgLevel2">
+                            <option value="">请选择II级机构</option>
+                            <!-- 动态填充II级机构 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="orgLevel3">III级机构</label>
+                        <select id="orgLevel3">
+                            <option value="">请选择III级机构</option>
+                            <!-- 动态填充III级机构 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="positionCategory">职位分类</label>
+                        <select id="positionCategory">
+                            <option value="">请选择职位分类</option>
+                            <!-- 动态填充职位分类 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="positionName">职位名称</label>
+                        <select id="positionName">
+                            <option value="">请选择职位名称</option>
+                            <!-- 动态填充职位名称 -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 右侧：图片上传 -->
+                <div class="right-side">
+                    <div class="image-preview-container">
+                        <label class="upload-btn">
+                            +
+                            <input type="file" class="upload-input" accept="image/*">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他全长表单字段 -->
+            <div class="form-group">
+                <label for="salaryStander">薪酬标准</label>
+                <select id="salaryStander">
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Registrant">登记人</label>
+                <input type="text" id="Registrant" placeholder="请输入登记人" disabled>
+            </div>
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" id="name">
+            </div>
+            <div class="form-group">
+                <label for="gender">性别</label>
+                <select id="gender">
+                    <option value="">请选择</option>
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email">
+            </div>
+            <div class="form-group">
+                <label for="phone">电话</label>
+                <input type="text" id="phone">
+            </div>
+            <div class="form-group">
+                <label for="qq">QQ</label>
+                <input type="text" id="qq">
+            </div>
+            <div class="form-group">
+                <label for="mobile">手机</label>
+                <input type="text" id="mobile">
+            </div>
+            <div class="form-group">
+                <label for="address">住址</label>
+                <input type="text" id="address">
+            </div>
+            <div class="form-group">
+                <label for="postalCode">邮编</label>
+                <input type="text" id="postalCode">
+            </div>
+            <div class="form-group">
+                <label for="nationality">国籍</label>
+                <input type="text" id="nationality">
+            </div>
+            <div class="form-group">
+                <label for="birthday">生日</label>
+                <input type="date" id="birthday">
+            </div>
+            <div class="form-group">
+                <label for="ethnicity">民族</label>
+                <select id="ethnicity">
+                    <option value="">汉族</option>
+                    <option value="">其他民族</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="religion">宗教信仰</label>
+                <input type="text" id="religion">
+            </div>
+            <div class="form-group">
+                <label for="politicalAffiliation">政治面貌</label>
+                <input type="text" id="politicalAffiliation">
+            </div>
+            <div class="form-group">
+                <label for="idNumber">身份证号码</label>
+                <input type="text" id="idNumber">
+            </div>
+            <div class="form-group">
+                <label for="socialSecurityNumber">社会保障号码</label>
+                <input type="text" id="socialSecurityNumber">
+            </div>
+            <div class="form-group">
+                <label for="age">年龄</label>
+                <input type="number" id="age">
+            </div>
+            <div class="form-group">
+                <label for="education">学历</label>
+                <select id="education">
+                    <option value="">请选择</option>
+                    <option value="">小学</option>
+                    <option value="">初中</option>
+                    <option value="">高中</option>
+                    <option value="">大专</option>
+                    <option value="">本科及以上</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="account">账号</label>
+                <input type="text" id="account">
+            </div>
+            <div class="form-group">
+                <label for="registerTime">建档时间</label>
+                <input type="datetime-local" id="registerTime">
+            </div>
+            <div class="form-group">
+                <label for="resume">个人履历</label>
+                <textarea id="resume"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="familyInfo">家庭关系信息</label>
+                <textarea id="familyInfo"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="remarks">备注</label>
+                <textarea id="remarks"></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- 人力资源档案变更模态框 -->
+    <div class="modal" id="changeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>您正在做的业务是: 人力资源/人力资源档案管理/人力资源档案变更</h5>
+                <!-- 按钮组 -->
+                <div class="btn-group">
+                    <input type="text" id="archiveId" placeholder="输入档案编号选择修改员工">
+                    <button class="btn-save" onclick="searchEmployee()">查询</button>
+                    <button class="btn-save" onclick="saveEmployeeInfo()">保存</button>
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                </div>
+            </div>
+
+            <!-- 表单字段和图片上传容器 -->
+            <div class="form-group-container">
+                <!-- 左侧：机构表单 -->
+                <div class="left-side">
+                    <div class="form-group">
+                        <label for="archiveNumber">档案编号</label>
+                        <input type="text" id="archiveNumber" disabled placeholder="档案编号">
+                    </div>
+                    <!-- I级机构 -->
+                    <div class="form-group">
+                        <label for="orgLevel1">I级机构</label>
+                        <input type="text" id="orgLevel1" placeholder="请输入I级机构" disabled>
+                    </div>
+                    <!-- II级机构 -->
+                    <div class="form-group">
+                        <label for="orgLevel2">II级机构</label>
+                        <input type="text" id="orgLevel2" placeholder="请输入II级机构" disabled>
+                    </div>
+                    <!-- III级机构 -->
+                    <div class="form-group">
+                        <label for="orgLevel3>III级机构</label>
+                        <input type=" text" id="orgLevel3" placeholder="请输入III级机构" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="positionCategory">职位分类</label>
+                        <input type="text" id="positionCategory" disabled placeholder="职位分类">
+                    </div>
+                    <div class="form-group">
+                        <label for="positionName">职位名称</label>
+                        <input type="text" id="positionName" disabled placeholder="职位名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="salaryStander">薪酬标准</label>
+                        <select id="salaryStander">
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 右侧：图片上传 -->
+                <div class="right-side">
+                    <div class="image-preview-container">
+                        <label class="upload-btn">
+                            +
+                            <input type="file" class="upload-input" accept="image/*">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他全长表单字段 -->
+            <div class="form-group">
+                <label for="changePerson">变更人</label>
+                <input type="text" id="changePerson" placeholder="变更人" disabled>
+            </div>
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" id="name">
+            </div>
+            <div class="form-group">
+                <label for="gender">性别</label>
+                <select id="gender">
+                    <option value="">请选择</option>
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email">
+            </div>
+            <div class="form-group">
+                <label for="phone">电话</label>
+                <input type="text" id="phone">
+            </div>
+            <div class="form-group">
+                <label for="qq">QQ</label>
+                <input type="text" id="qq">
+            </div>
+            <div class="form-group">
+                <label for="mobile">手机</label>
+                <input type="text" id="mobile">
+            </div>
+            <div class="form-group">
+                <label for="address">住址</label>
+                <input type="text" id="address">
+            </div>
+            <div class="form-group">
+                <label for="postalCode">邮编</label>
+                <input type="text" id="postalCode">
+            </div>
+            <div class="form-group">
+                <label for="nationality">国籍</label>
+                <input type="text" id="nationality">
+            </div>
+            <div class="form-group">
+                <label for="birthday">生日</label>
+                <input type="date" id="birthday">
+            </div>
+            <div class="form-group">
+                <label for="ethnicity">民族</label>
+                <select id="ethnicity">
+                    <option value="">汉族</option>
+                    <option value="">其他民族</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="religion">宗教信仰</label>
+                <input type="text" id="religion">
+            </div>
+            <div class="form-group">
+                <label for="politicalAffiliation">政治面貌</label>
+                <input type="text" id="politicalAffiliation">
+            </div>
+            <div class="form-group">
+                <label for="idNumber">身份证号码</label>
+                <input type="text" id="idNumber">
+            </div>
+            <div class="form-group">
+                <label for="socialSecurityNumber">社会保障号码</label>
+                <input type="text" id="socialSecurityNumber">
+            </div>
+            <div class="form-group">
+                <label for="age">年龄</label>
+                <input type="number" id="age">
+            </div>
+            <div class="form-group">
+                <label for="education">学历</label>
+                <select id="education">
+                    <option value="">请选择</option>
+                    <option value="">小学</option>
+                    <option value="">初中</option>
+                    <option value="">高中</option>
+                    <option value="">大专</option>
+                    <option value="">本科及以上</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="account">账号</label>
+                <input type="text" id="account">
+            </div>
+            <div class="form-group">
+                <label for="registerTime">建档时间</label>
+                <input type="datetime-local" id="registerTime">
+            </div>
+            <div class="form-group">
+                <label for="resume">个人履历</label>
+                <textarea id="resume"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="familyInfo">家庭关系信息</label>
+                <textarea id="familyInfo"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="remarks">备注</label>
+                <textarea id="remarks"></textarea>
+            </div>
+
+        </div>
+    </div>
+    <!-- 人力资源档案查询模态框 -->
+    <div class="modal" id="queryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>您正在做的业务是: 人力资源/人力资源档案管理/人力资源档案查询</h5>
+                <div class="btn-group">
+                    <button class="btn-save" onclick="queryEmployeeData()">查询</button>
+                    <button class="btn-cancel" onclick="closeModal('queryModal')">退出</button>
+                </div>
+            </div>
+
+            <!-- 表单字段 -->
+            <div class="form-group-container">
+                <div class="left-side">
+                    <!-- I级机构 -->
+                    <div class="form-group">
+                        <label for="orgLevel1Query">I级机构</label>
+                        <select id="orgLevel1Query">
+                            <option value="">请选择I级机构</option>
+                            <!-- 动态填充I级机构 -->
+                        </select>
+                    </div>
+                    <!-- II级机构 -->
+                    <div class="form-group">
+                        <label for="orgLevel2Query">II级机构</label>
+                        <select id="orgLevel2Query">
+                            <option value="">请选择I级机构</option>
+                            <!-- 动态填充I级机构 -->
+                        </select>
+                    </div>
+                    <!-- III级机构 -->
+                    <div class="form-group">
+                        <label for="orgLevel3Query">III级机构</label>
+                        <select id="orgLevel3Query">
+                            <option value="">请选择I级机构</option>
+                            <!-- 动态填充I级机构 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="positionCategoryQuery">职位分类</label>
+                        <select id="positionCategoryQuery">
+                            <option value="">请选择职位分类</option>
+                            <!-- 动态填充职位分类 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="positionNameQuery">职位名称</label>
+                        <select id="positionNameQuery">
+                            <option value="">请选择职位名称</option>
+                            <!-- 动态填充职位名称 -->
+                        </select>
+                    </div>
+                    <!-- 建档起始时间 -->
+                    <div class="form-group">
+                        <label for="startDate">建档起始时间</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <!-- 建档截至时间 -->
+                    <div class="form-group">
+                        <label for="endDate">建档截至时间</label>
+                        <input type="date" id="endDate">
+                    </div>
+                </div>
+                <div class="right-side" style="margin-bottom: 490px;">
+                    <!-- 查询结果表格 -->
+                    <table id="employeeTable">
+                        <thead>
+                            <tr>
+                                <th>档案编号</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>一级机构</th>
+                                <th>二级机构</th>
+                                <th>三级机构</th>
+                                <th>职位名称</th>
+                                <th>查看详情</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 查询结果将动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 详细信息模态框 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>档案详细信息</h5>
+                <button class="btn-cancel" onclick="closeModal('detailModal')">关闭</button>
+            </div>
+            <!-- 表单字段和图片上传容器 -->
+            <div class="form-group-container">
+                <!-- 左侧：机构表单 -->
+                <div class="left-side">
+                    <div class="form-group">
+                        <label for="detailArchiveNumber">档案编号</label>
+                        <input type="text" id="detailArchiveNumber" disabled placeholder="档案编号">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailOrgLevel1">I级机构</label>
+                        <input type="text" id="detailOrgLevel1" disabled placeholder="I级机构">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailOrgLevel2">II级机构</label>
+                        <input type="text" id="detailOrgLevel2" disabled placeholder="II级机构">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailOrgLevel3">III级机构</label>
+                        <input type="text" id="detailOrgLevel3" disabled placeholder="III级机构">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailPositionCategory">职位分类</label>
+                        <input type="text" id="detailPositionCategory" disabled placeholder="职位分类">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailPositionName">职位名称</label>
+                        <input type="text" id="detailPositionName" disabled placeholder="职位名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailSalaryStander">薪酬标准</label>
+                        <input type="text" id="detailSalaryStander" disabled>
+                    </div>
+                </div>
+
+                <!-- 右侧：图片展示 -->
+                <div class="right-side">
+                    <div class="image-preview-container" id="detailImagePreview">
+                        <!-- 图片将在这里展示 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他全长表单字段 -->
+            <div class="form-group">
+                <label for="detailName">姓名</label>
+                <input disabled type="text" id="detailName">
+            </div>
+            <div class="form-group">
+                <label for="detailGender">性别</label>
+                <select disabled id="detailGender">
+                    <option value="">请选择</option>
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="detailEmail">Email</label>
+                <input disabled type="email" id="detailEmail">
+            </div>
+            <div class="form-group">
+                <label for="detailPhone">电话</label>
+                <input disabled type="text" id="detailPhone">
+            </div>
+            <div class="form-group">
+                <label for="detailQQ">QQ</label>
+                <input disabled type="text" id="detailQQ">
+            </div>
+            <div class="form-group">
+                <label for="detailMobile">手机</label>
+                <input disabled type="text" id="detailMobile">
+            </div>
+            <div class="form-group">
+                <label for="detailAddress">住址</label>
+                <input disabled type="text" id="detailAddress">
+            </div>
+            <div class="form-group">
+                <label for="detailPostalCode">邮编</label>
+                <input disabled type="text" id="detailPostalCode">
+            </div>
+            <div class="form-group">
+                <label for="detailNationality">国籍</label>
+                <input disabled type="text" id="detailNationality">
+            </div>
+            <div class="form-group">
+                <label for="detailBirthday">生日</label>
+                <input disabled type="date" id="detailBirthday">
+            </div>
+            <div class="form-group">
+                <label for="detailEthnicity">民族</label>
+                <select disabled id="detailEthnicity">
+                    <option value="">汉族</option>
+                    <option value="">其他民族</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="detailReligion">宗教信仰</label>
+                <input disabled type="text" id="detailReligion">
+            </div>
+            <div class="form-group">
+                <label for="detailPoliticalAffiliation">政治面貌</label>
+                <input disabled type="text" id="detailPoliticalAffiliation">
+            </div>
+            <div class="form-group">
+                <label for="detailIdNumber">身份证号码</label>
+                <input disabled type="text" id="detailIdNumber">
+            </div>
+            <div class="form-group">
+                <label for="detailSocialSecurityNumber">社会保障号码</label>
+                <input disabled type="text" id="detailSocialSecurityNumber">
+            </div>
+            <div class="form-group">
+                <label for="detailAge">年龄</label>
+                <input disabled type="number" id="detailAge">
+            </div>
+            <div class="form-group">
+                <label for="detailEducation">学历</label>
+                <select disabled id="detailEducation">
+                    <option value="">请选择</option>
+                    <option value="">小学</option>
+                    <option value="">初中</option>
+                    <option value="">高中</option>
+                    <option value="">大专</option>
+                    <option value="">本科及以上</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="detailAccount">账号</label>
+                <input disabled type="text" id="detailAccount">
+            </div>
+            <div class="form-group">
+                <label for="detailRegisterTime">建档时间</label>
+                <input disabled type="datetime-local" id="detailRegisterTime">
+            </div>
+            <div class="form-group">
+                <label for="detailResume">个人履历</label>
+                <textarea disabled id="detailResume"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="detailFamilyInfo">家庭关系信息</label>
+                <textarea disabled id="detailFamilyInfo"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="detailRemarks">备注</label>
+                <textarea disabled id="detailRemarks"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

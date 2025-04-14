@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理模块</title>
+    <link rel="stylesheet" href="../css/salary-functions.css">
+    <link rel="stylesheet" href="../css/salary.css">
+
+    <script>
+        // 退出登录逻辑
+        async function logoutUser() {
+            try {
+                const response = await fetch("http://121.43.159.232:8080/user/logout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include"  // 确保携带 cookie
+                });
+
+                if (response.ok) {
+                    alert("退出成功！");
+                    // 跳转到登录页面
+                    window.location.href = "http://121.43.159.232:8080/public/login.html";  // 确保跳转到正确的页面
+                } else {
+                    alert("退出失败，请稍后重试！");
+                }
+            } catch (error) {
+                console.error("退出失败:", error);
+                alert("退出失败，请稍后重试！");
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>薪酬标准管理模块</h1>
+        <button class="logout-btn" onclick="logoutUser()">退出</button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h2>薪酬标准管理</h2>
+        <p>
+            在本模块中，您可以完成管理和请求变更薪酬标准。
+        </p>
+
+        <!-- 模块信息展示 -->
+        <div class="modules">
+            <div class="module-card">
+                <h3>查询薪酬标准</h3>
+                <p>根据条件查询薪酬标准，并请求变更</p>
+                <button type="button" class="button" id="ShowSelectButton">查询薪酬标准</button>
+            </div>
+
+            <div class="module-card">
+                <h3>新增薪酬标准</h3>
+                <p>请求添加新的薪酬标准。</p>
+                <button type="button" class="button" id="ShowAddButton">新增薪酬标准</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div id="Mask"></div>
+
+    <!-- 查询盒子 -->
+    <div id="SelectBox">
+
+        <!-- 输入栏 -->
+        <form id="salaryForm" class="query-form">
+            <div class="form-group">
+                <label for="sid">薪酬id：</label>
+                <input type="text" id="sid" placeholder="请输入薪酬id">
+            </div>
+            <div class="form-group">
+                <label for="key">薪酬信息：</label>
+                <input type="text" id="key" placeholder="请输入薪酬信息">
+            </div>
+            <div class="form-group">
+                <label for="start_time">登记开始时间：</label>
+                <input type="date" id="start_time" placeholder="请输入登记开始时间">
+            </div>
+            <div class="form-group">
+                <label for="end_time">登记结束时间：</label>
+                <input type="date" id="end_time" placeholder="请输入登记结束时间">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutSelectButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenSelectButton">取消</button>
+            </div>
+        </form>
+
+        <h2>薪酬标准列表</h2>
+        <!-- 薪酬标准列表 -->
+        <div id="salaryList">
+            <table id="salaryItems">
+                <thead>
+                <tr>
+                    <th>薪酬id</th>
+                    <th>薪酬名称</th>
+                    <th>薪酬金额</th>
+                    <th>制定者</th>
+                    <th>登记者</th>
+                    <th>登记时间</th>
+                    <th>复核人</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+    <!-- 新增盒子 -->
+    <div id="AddBox">
+        <!-- 输入栏 -->
+        <h2>新增薪酬标准</h2>
+        <form id="add-salaryForm" class="query-form">
+            <div class="form-group">
+                <label for="add-sid">薪酬id：</label>
+                <input type="text" id="add-sid" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="add-sname">薪酬名称：</label>
+                <input type="text" id="add-sname" placeholder="请输入薪酬标准名称">
+            </div>
+            <div class="form-group">
+                <label for="add-total">薪酬金额：</label>
+                <input type="number" id="add-total" placeholder="请输入薪酬金额">
+            </div>
+            <div class="form-group">
+                <label for="add-maker">制定人：</label>
+                <input type="text" id="add-maker" placeholder="请输入制定人">
+            </div>
+            <div class="form-group">
+                <label for="add-register">登记人：</label>
+                <input type="text" id="add-register" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="add-stime">登记时间：</label>
+                <input type="text" id="add-stime" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="add-opinion">意见：</label>
+                <textarea id="add-opinion"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutAddButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenAddButton">取消</button>
+            </div>
+        </form>
+
+        <!-- 薪酬标准列表 -->
+        <div id="add-salaryList">
+            <table id="add-salaryItems">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>薪酬项目名称</th>
+                    <th>金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 新增盒子 -->
+    <div id="UpdateBox">
+        <!-- 输入栏 -->
+        <h2>删除薪酬标准</h2>
+        <form id="update-salaryForm" class="query-form">
+            <div class="form-group">
+                <label for="update-sid">薪酬id：</label>
+                <input type="text" id="update-sid" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="update-sname">薪酬名称：</label>
+                <input type="text" id="update-sname" placeholder="请输入薪酬标准名称">
+            </div>
+            <div class="form-group">
+                <label for="update-total">薪酬金额：</label>
+                <input type="number" id="update-total" placeholder="请输入薪酬金额">
+            </div>
+            <div class="form-group">
+                <label for="update-maker">制定人：</label>
+                <input type="text" id="update-maker" placeholder="请输入制定人">
+            </div>
+            <div class="form-group">
+                <label for="update-register">登记人：</label>
+                <input type="text" id="update-register" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="update-stime">登记时间：</label>
+                <input type="text" id="update-stime" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="update-opinion">意见：</label>
+                <textarea id="update-opinion"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutUpdateButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenUpdateButton">取消</button>
+            </div>
+        </form>
+
+        <!-- 薪酬标准列表 -->
+        <div id="update-salaryList">
+            <table id="update-salaryItems">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>薪酬项目名称</th>
+                    <th>金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="DeleteBox">
+        <!-- 输入栏 -->
+        <h2>修改薪酬标准</h2>
+        <form id="delete-salaryForm" class="query-form">
+            <div class="form-group">
+                <label for="delete-sid">薪酬id：</label>
+                <input type="text" id="delete-sid" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="delete-sname">薪酬名称：</label>
+                <input type="text" id="delete-sname" placeholder="请输入薪酬标准名称" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="delete-total">薪酬金额：</label>
+                <input type="number" id="delete-total" placeholder="请输入薪酬金额" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="delete-maker">制定人：</label>
+                <input type="text" id="delete-maker" placeholder="请输入制定人" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="delete-register">登记人：</label>
+                <input type="text" id="delete-register" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="delete-stime">登记时间：</label>
+                <input type="text" id="delete-stime" disabled="disabled">
+            </div>
+            <div class="form-group">
+                <label for="delete-opinion">意见：</label>
+                <textarea id="delete-opinion"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutDeleteButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenDeleteButton">取消</button>
+            </div>
+        </form>
+
+        <!-- 薪酬标准列表 -->
+        <div id="delete-salaryList">
+            <table id="delete-salaryItems">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>薪酬项目名称</th>
+                    <th>金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/salary.js"></script>
+</body>
+
+</html>

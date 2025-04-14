@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理模块</title>
+    <link rel="stylesheet" href="../css/salary-functions.css">
+    <link rel="stylesheet" href="../css/issuesalary.css">
+
+    <script>
+        // 退出登录逻辑
+        async function logoutUser() {
+            try {
+                const response = await fetch("http://121.43.159.232:8080/user/logout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include"  // 确保携带 cookie
+                });
+
+                if (response.ok) {
+                    alert("退出成功！");
+                    // 跳转到登录页面
+                    window.location.href = "http://121.43.159.232:8080/public/login.html";  // 确保跳转到正确的页面
+                } else {
+                    alert("退出失败，请稍后重试！");
+                }
+            } catch (error) {
+                console.error("退出失败:", error);
+                alert("退出失败，请稍后重试！");
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>薪酬发放管理模块</h1>
+        <button class="logout-btn" onclick="logoutUser()">退出</button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h2>薪酬发放管理</h2>
+        <p>
+            在本模块中，您可以完成发放薪酬的相关操作。
+        </p>
+
+        <!-- 模块信息展示 -->
+        <div class="modules">
+            <div class="module-card">
+                <h3>查询薪酬发放表</h3>
+                <p>根据条件查询薪酬发放表。</p>
+                <button type="button" class="button" id="ShowSelectButton">查询薪酬发放表</button>
+            </div>
+            <div class="module-card">
+                <h3>新增薪酬发放表</h3>
+                <p>提供部门id,为该部门发放薪酬。</p>
+                <button type="button" class="button" id="ShowAddButton">新增薪酬发放表</button>
+            </div>
+            <div class="module-card">
+                <h3>复核薪酬发放表</h3>
+                <p>审核请求发放薪酬的部门发放表。</p>
+                <button type="button" class="button" id="ShowCheckButton">复核薪酬发放表</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div id="Mask1"></div>
+
+    <!-- 查询盒子 -->
+    <div id="SelectBox">
+
+        <!-- 输入栏 -->
+        <form id="salaryForm" class="query-form">
+            <div class="form-group">
+                <label for="select-dpid">部门薪酬发放表编号：</label>
+                <input type="text" id="select-dpid" placeholder="请输入薪酬id">
+            </div>
+            <div class="form-group">
+                <label for="select-department">部门信息：</label>
+                <input type="text" id="select-department" placeholder="请输入薪酬信息">
+            </div>
+            <div class="form-group">
+                <label for="select-register">登记者：</label>
+                <input type="text" id="select-register" placeholder="请输入登记者">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutSelectButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenSelectButton">取消</button>
+            </div>
+        </form>
+
+        <h2>薪酬标准列表</h2>
+        <!-- 薪酬标准列表 -->
+        <div id="salaryList">
+            <table id="salaryItems">
+                <thead>
+                <tr>
+                    <th>薪酬单编号</th>
+                    <th>1级机构</th>
+                    <th>2级机构</th>
+                    <th>3级机构</th>
+                    <th>人数</th>
+                    <th>基本薪酬总额</th>
+                    <th>登记</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- 新的中间盒子 -->
+        <div id="SelectBox-DetailBox">
+            <div class="top-bar">
+                <span class="title">薪酬发放登记明细</span>
+                <button class="top-button" id="top-button">取消</button>
+            </div>
+            <div class="detail-content" id="detail-content">
+                <div class="detail-item">
+                    <span class="label">薪酬单编号：</span>
+                    <span class="value" id="detail-select-dpid"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">机构：</span>
+                    <span class="value" id="detail-select-department"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">总人数：</span>
+                    <span class="value" id="detail-select-number"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">基本薪酬总额：</span>
+                    <span class="value" id="detail-select-departmentsalary"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">登记人：</span>
+                    <span class="value" id="detail-select-register"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">登记时间：</span>
+                    <span class="value" id="detail-select-dtime"></span>
+                </div>
+            </div>
+
+
+            <table id="detail-salaryList" class="add-salaryList">
+                <thead id="detail-salaryItems" class="add-salaryItems">
+                <tr>
+                    <th>档案编号</th>
+                    <th>姓名</th>
+                    <th>基本工资</th>
+                    <th>医疗保险</th>
+                    <th>住房保险</th>
+                    <th>失业保险</th>
+                    <th>住房公积金</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 新增盒子 -->
+    <div id="AddBox">
+        <!-- 输入栏 -->
+        <h2>新增薪酬标准</h2>
+        <form id="add-salaryForm" class="query-form">
+            <div class="form-group">
+                <label for="add-id">部门id：</label>
+                <input type="number" id="add-id">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutAddButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenAddButton">取消</button>
+            </div>
+        </form>
+
+        <!-- 薪酬标准列表 -->
+        <div id="add-salaryList" class="add-salaryList">
+            <table id="add-salaryItems" class="add-salaryItems">
+                <thead>
+                <tr>
+                    <th>薪酬单编号</th>
+                    <th>1级机构</th>
+                    <th>2级机构</th>
+                    <th>3级机构</th>
+                    <th>人数</th>
+                    <th>基本薪酬总额</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!--复核盒子 -->
+    <div id="CheckBox">
+
+        <!-- 输入栏 -->
+        <form id="checkForm" class="query-form">
+            <div class="form-group">
+                <label for="select-dpid">部门薪酬发放表编号：</label>
+                <input type="text" id="check-dpid" placeholder="请输入薪酬id">
+            </div>
+            <div class="form-group">
+                <label for="select-department">部门信息：</label>
+                <input type="text" id="check-department" placeholder="请输入薪酬信息">
+            </div>
+            <div class="form-group">
+                <label for="select-register">登记者：</label>
+                <input type="text" id="check-register" placeholder="请输入登记者">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-green" id="PutCheckButton">提交</button>
+                <button type="button" class="btn-red" id="HiddenCheckButton">取消</button>
+            </div>
+        </form>
+
+        <h2>薪酬标准列表</h2>
+        <!-- 薪酬标准列表 -->
+        <div id="checkList">
+            <table id="checkItems">
+                <thead>
+                <tr>
+                    <th>薪酬单编号</th>
+                    <th>1级机构</th>
+                    <th>2级机构</th>
+                    <th>3级机构</th>
+                    <th>人数</th>
+                    <th>基本薪酬总额</th>
+                    <th>登记</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- 新的中间盒子 -->
+        <div id="CheckBox-DetailBox">
+            <div class="top-bar">
+                <span class="title">薪酬发放登记明细</span>
+                <div class="button-container">
+                    <button class="btn-approve" id="check-pass-button">通过</button>
+                    <button class="btn-reject" id="check-unpass-button">否决</button>
+                    <button class="btn-reject" id="check-cancel-button">取消</button>
+                </div>
+            </div>
+            <div class="detail-content" id="detail-check-content">
+                <div class="detail-item">
+                    <span class="label">薪酬单编号：</span>
+                    <span class="value" id="detail-check-dpid"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">机构：</span>
+                    <span class="value" id="detail-check-department"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">总人数：</span>
+                    <span class="value" id="detail-check-number"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">基本薪酬总额：</span>
+                    <span class="value" id="detail-check-departmentsalary"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">登记人：</span>
+                    <span class="value" id="detail-check-register"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">登记时间：</span>
+                    <span class="value" id="detail-check-dtime"></span>
+                </div>
+            </div>
+
+            <table id="detail-checkList" class="add-salaryList">
+                <thead id="detail-checkItems" class="add-salaryItems">
+                <tr>
+                    <th>档案编号</th>
+                    <th>姓名</th>
+                    <th>基本工资</th>
+                    <th>医疗保险</th>
+                    <th>住房保险</th>
+                    <th>失业保险</th>
+                    <th>住房公积金</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/issuesalary.js"></script>
+</body>
+
+</html>

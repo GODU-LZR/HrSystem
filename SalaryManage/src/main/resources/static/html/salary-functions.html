@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理模块</title>
+    <link rel="stylesheet" href="../css/salary-functions.css">
+
+    <script>
+        // 退出登录逻辑
+        async function logoutUser() {
+            try {
+                const response = await fetch("http://121.43.159.232:8080/user/logout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include"  // 确保携带 cookie
+                });
+
+                if (response.ok) {
+                    alert("退出成功！");
+                    // 跳转到登录页面
+                    window.location.href = "http://121.43.159.232:8080/public/login.html";  // 确保跳转到正确的页面
+                } else {
+                    alert("退出失败，请稍后重试！");
+                }
+            } catch (error) {
+                console.error("退出失败:", error);
+                alert("退出失败，请稍后重试！");
+            }
+        }    </script>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>系统管理模块</h1>
+        <button class="logout-btn" onclick="logoutUser()">退出</button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h2>薪酬管理</h2>
+        <p>
+            在本模块中，您可以完成薪酬标准管理和发放薪酬的相关操作。
+        </p>
+
+        <!-- 模块信息展示 -->
+        <div class="modules">
+            <div class="module-card">
+                <h3>薪酬标准管理</h3>
+                <p>管理和请求变更薪酬标准</p>
+                <a href="/static/html/salary.html" class="btn">进入模块</a>
+            </div>
+
+            <div class="module-card">
+                <h3>复核薪酬标准管理</h3>
+                <p>审核薪酬标准变更的请求</p>
+                <a href="/static/html/checksalary.html" class="btn">进入模块</a>
+            </div>
+
+            <div class="module-card">
+                <h3>薪酬发放管理</h3>
+                <p>发放部门员工的薪酬</p>
+                <a href="/static/html/issuesalary.html" class="btn">进入模块</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

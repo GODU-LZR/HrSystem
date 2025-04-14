@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理模块</title>
+    <link rel="stylesheet" href="../css/salary-functions.css">
+    <link rel="stylesheet" href="../css/checksalary.css">
+
+    <script>
+        // 退出登录逻辑
+        async function logoutUser() {
+            try {
+                const response = await fetch("http://121.43.159.232:8080/user/logout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include"  // 确保携带 cookie
+                });
+
+                if (response.ok) {
+                    alert("退出成功！");
+                    // 跳转到登录页面
+                    window.location.href = "http://121.43.159.232/public/login.html";  // 确保跳转到正确的页面
+                } else {
+                    alert("退出失败，请稍后重试！");
+                }
+            } catch (error) {
+                console.error("退出失败:", error);
+                alert("退出失败，请稍后重试！");
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>复核薪酬标准管理模块</h1>
+        <button class="logout-btn" onclick="logoutUser()">退出</button>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div id="Mask"></div>
+
+
+    <!-- 包裹容器，用于定位盒子 -->
+    <div class="wrapper">
+
+        <div class="center-box">
+            <!-- 输入栏 -->
+            <form id="salaryForm" class="query-form">
+                <div class="form-group">
+                    <label for="select-checkid">薪酬编号：</label>
+                    <input type="text" id="select-checkid" placeholder="请输入薪酬编号">
+                </div>
+
+                <div class="form-group">
+                    <label for=select-sname>薪酬标准名称：</label>
+                    <input type="text" id="select-sname" placeholder="请输入薪酬标准名称">
+                </div>
+                <div class="form-group">
+                    <label for="select-checked">是否已复核：</label>
+                    <select id="select-checked">
+                        <option value="0">未复核</option>
+                        <option value="1">已通过</option>
+                        <option value="2">已否决</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-green" id="PutSelectButton">提交</button>
+                </div>
+            </form>
+
+
+
+            <div class="table-container">
+                <table class="styled-table" id="salaryItems">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>薪酬标准名称</th>
+                        <th>复合类型</th>
+                        <th>是否已复核</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 更多行可以添加这里 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查询盒子 -->
+    <div id="DetailBox">
+
+        <!-- 绿色栏 -->
+        <div class="top-bar">
+            <span class="title">薪酬标准详情</span>
+            <div class="button-container">
+                <button class="btn-approve" id="approve-btn">通过</button>
+                <button class="btn-reject" id="reject-btn">否决</button>
+                <button class="btn-reject" id="HiddenDetailButton">取消</button>
+            </div>
+        </div>
+
+        <!-- 内容展示 -->
+        <div class="detail-content" id="detail-content">
+            <span class="value" id="checkid" hidden="hidden"></span>
+            <div class="detail-item">
+                <span class="label">薪酬标准编号：</span>
+                <span class="value" id="sid"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">薪酬标准名称：</span>
+                <span class="value" id="sname"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">薪酬总额：</span>
+                <span class="value" id="total"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">制定人：</span>
+                <span class="value" id="maker"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">登记人：</span>
+                <span class="value" id="register"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">登记时间：</span>
+                <span class="value" id="stime"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">复核意见：</span>
+            </div>
+        </div>
+        <div class="review-box" id="review-box">
+            <span class="value" id="opinion"></span>
+        </div>
+
+        <!-- 薪酬标准列表 -->
+        <div id="detail-salaryList">
+            <table id="detail-salaryItems">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>薪酬项目名称</th>
+                    <th>金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 数据将在这里动态插入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../js/checksalary.js"></script>
+</body>
+
+</html>

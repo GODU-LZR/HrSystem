@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>薪酬标准管理</title>
+  <link rel="stylesheet" href="../css/salary-test.css">
+</head>
+<body>
+<div class="header">
+  <h1>薪酬标准管理系统</h1>
+</div>
+
+<div class="container">
+  <!-- 查询薪酬标准输入框 -->
+  <form id="salaryForm" class="query-form">
+    <div class="form-group">
+      <label for="salaryName">薪酬标准名称：</label>
+      <input type="text" id="salaryName" placeholder="请输入薪酬标准名称查询">
+    </div>
+    <div class="form-group">
+      <label for="registrant">登记人：</label>
+      <input type="text" id="registrant" placeholder="请输入登记人">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn-green">提交</button>
+      <button type="button" class="btn-green" id="addButton">新增</button>
+    </div>
+  </form>
+
+  <div id="salaryList">
+    <h2>薪酬标准列表</h2>
+    <table id="salaryItems">
+      <thead>
+      <tr>
+        <th>薪酬标准名称</th>
+        <th>薪酬金额</th>
+        <th>登记人</th>
+        <th>制定人</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 新增薪酬标准弹出窗口 -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h2>新增薪酬标准</h2>
+    <form id="modalForm">
+      <div class="form-group">
+        <label for="modalSalaryName">薪酬标准名称：</label>
+        <input type="text" id="modalSalaryName" required>
+      </div>
+      <div class="form-group">
+        <label for="modalSalaryAmount">薪酬金额：</label>
+        <input type="number" id="modalSalaryAmount" required>
+      </div>
+      <div class="form-group">
+        <label for="modalRegistrant">登记人：</label>
+        <input type="text" id="modalRegistrant" required>
+      </div>
+      <div class="form-group">
+        <label for="modalCreator">制定人：</label>
+        <input type="text" id="modalCreator" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-green">提交</button>
+        <button type="button" class="btn-red" id="cancelButton">取消</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../js/salary-test.js"></script>
+</body>
+</html>

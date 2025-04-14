@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.salarymanage.mapper.CheckSalaryStdMapper">
+    <!--SQL语句-->
+
+    <!--复核完成后伪删除对应的复核条目-->
+    <update id="removeCheckSalaryStd">
+        update checksalarystd
+        set checked = #{checked}
+        where checkid = #{checkid}
+    </update>
+
+    <update id="checkaddSalaryStd">
+        update salarystd
+        join checksalarystd on checksalarystd.checkid = #{checkid} and salarystd.sid = checksalarystd.sid
+        set salarystd.sname = checksalarystd.sname,
+            salarystd.total = checksalarystd.total,
+            salarystd.maker = checksalarystd.maker,
+            salarystd.register = checksalarystd.register,
+            salarystd.stime = checksalarystd.stime,
+            salarystd.checker = #{checker}
+    </update>
+
+    <update id="checkmodifySalaryStd">
+        update salarystd
+        join checksalarystd on checksalarystd.checkid = #{checkid} and salarystd.sid = checksalarystd.sid
+        set salarystd.sname = checksalarystd.sname,
+            salarystd.total = checksalarystd.total,
+            salarystd.maker = checksalarystd.maker,
+            salarystd.register = checksalarystd.register,
+            salarystd.checker = #{checker}
+    </update>
+
+    <delete id="checkremoveSalaryStd">
+        delete from salarystd
+        where sid = (select sid from checksalarystd where checkid = #{checkid})
+    </delete>
+
+    <select id="getCheckSalaryStd" resultType="com.example.salarymanage.pojo.CheckSalaryStd">
+        select * from checksalarystd
+        <where>
+            <if test="checkid != null and checked != ''">
+                and checkid = #{checkid}
+            </if>
+            <if test="sname != null and sname != ''">
+                and sname like CONCAT('%',#{sname},'%')
+            </if>
+            <if test="checked != null">
+                and checked = #{checked}
+            </if>
+        </where>
+    </select>
+
+    <select id="getCheckSalaryStdById" resultType="com.example.salarymanage.pojo.CheckSalaryStd">
+        select * from checksalarystd where checkid = #{checkid}
+    </select>
+
+</mapper>

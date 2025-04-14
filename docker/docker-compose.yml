@@ -1,0 +1,86 @@
+﻿version: '3.8'
+
+services:
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1253846077a          # root 用户密码
+      MYSQL_DATABASE: SystemAdministrationModule # 初始化的数据库名称
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./server.sql:/docker-entrypoint-initdb.d/server.sql # 导入初始化脚本
+      - mysql-data:/var/lib/mysql                          # 数据持久化
+    command: --lower_case_table_names=1                    # 添加参数：临时设置 lower_case_table_names
+    networks:
+      - homework-network
+
+  # System Administration 模块
+  system-administration:
+    image: openjdk:8-jdk-alpine
+    container_name: system-admin-container
+    restart: always
+    working_dir: /usr/app
+    volumes:
+      - ./SystemAdministrationModule-0.0.1-SNAPSHOT.jar:/usr/app/app.jar
+    command: ["java", "-jar", "app.jar"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/SystemAdministrationModule?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1253846077a
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - homework-network
+
+  # Human Resources File Management 模块
+  human-resources:
+    image: openjdk:8-jdk-alpine
+    container_name: hr-file-container
+    restart: always
+    working_dir: /usr/app
+    volumes:
+      - ./HumanResourcesFileManagementModule-0.0.1-SNAPSHOT.jar:/usr/app/app.jar
+    command: ["java", "-jar", "app.jar"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/SystemAdministrationModule?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1253846077a
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+    networks:
+      - homework-network
+
+  # Salary 模块
+  salary-module:
+    image: openjdk:8-jdk-alpine
+    container_name: salary-module-container
+    restart: always
+    working_dir: /usr/app
+    volumes:
+      - ./SalaryModule-0.0.1-SNAPSHOT.jar:/usr/app/app.jar
+    command: ["java", "-jar", "app.jar"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/SystemAdministrationModule?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1253846077a
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+    networks:
+      - homework-network
+
+volumes:
+  mysql-data: # 数据库数据存储卷
+
+networks:
+  homework-network: # 自定义网络，允许服务之间通信
+    driver: bridge

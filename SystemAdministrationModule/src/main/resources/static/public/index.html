@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人力资源管理系统</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* 主容器 */
+        .container {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .container h2 {
+            font-size: 28px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* 模块信息区 */
+        .modules {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .module-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .module-card h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .module-card .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .module-card .btn:hover {
+            background-color: #388E3C;
+        }
+
+        /* 登录按钮区 */
+        .login-btn-container {
+            margin-top: 40px;
+        }
+
+        .login-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background-color: #388E3C;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .module-card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>人力资源管理系统</h1>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h2>欢迎访问人力资源管理系统</h2>
+        <p>
+            本系统致力于帮助企业高效管理员工档案、薪酬标准以及权限分配。系统分为三个主要模块：
+            系统管理模块、人力资源档案管理模块和薪酬管理模块，覆盖从员工档案登记到薪酬发放的完整流程。
+        </p>
+
+        <!-- 模块信息展示 -->
+        <div class="modules">
+            <div class="module-card">
+                <h3>系统管理模块</h3>
+                <p>提供用户、角色和权限的管理功能，确保系统安全性和灵活性。</p>
+                <a href="/public/login.html" class="btn">了解更多</a>
+            </div>
+
+            <div class="module-card">
+                <h3>人力资源档案管理模块</h3>
+                <p>覆盖员工档案的全生命周期管理，包括登记、查询、更新和删除。</p>
+                <a href="/public/login.html" class="btn">了解更多</a>
+            </div>
+
+            <div class="module-card">
+                <h3>薪酬管理模块</h3>
+                <p>支持薪酬标准定义和发放记录管理，确保员工薪资核算的准确性。</p>
+                <a href="/public/login.html" class="btn">了解更多</a>
+            </div>
+        </div>
+
+        <!-- 登录按钮 -->
+        <div class="login-btn-container">
+            <a href="/public/login.html" class="login-btn">立即登录</a>
+        </div>
+    </div>
+</body>
+</html>

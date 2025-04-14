@@ -1,0 +1,294 @@
+/* 包裹容器，用于定位盒子 */
+.wrapper {
+    display: flex;
+    justify-content: center;    /* 水平居中 */
+    align-items: flex-start;     /* 垂直顶部对齐 */
+    height: 93vh;               /* 使容器高度占满整个屏幕 */
+    box-sizing: border-box;      /* 包括内边距和边框在内的宽度和高度 */
+    overflow: hidden;            /* 防止 body 和 wrapper 出现滚动条 */
+}
+
+/* 居中盒子样式 */
+.center-box {
+    width: 60%;
+    height: 100%;                 /* 让盒子的高度占满屏幕 */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;       /* 确保 padding 和 border 包含在内 */
+    padding: 20px;                /* 内边距 */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;             /* 确保盒子本身不出现滚动条 */
+}
+
+
+.query-form {
+    background-color: white;
+    padding: 20px;
+    width: 90%;
+    margin: 20px auto;
+}
+
+.query-form .form-group {
+    display: flex;                /* 使用 Flexbox 布局 */
+    margin-bottom: 15px;
+}
+
+.query-form label {
+    width: 20%;                 /* 固定宽度，确保不同列的 label 对齐 */
+    font-weight: bold;
+    margin-right: 10px;           /* 给 label 和 input 之间增加一些间距 */
+    text-align: right;            /* 将 label 文本右对齐 */
+    line-height: 1.6;             /* 设置 line-height 保证文本垂直居中对齐 */
+    vertical-align: middle;       /* 确保文本和 input 对齐 */
+}
+
+.query-form input,select {
+    width: 90%;                 /* 设置输入框的宽度，可以根据需要调整 */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    box-sizing: border-box;       /* 使 padding 和 border 包含在宽度和高度内 */
+    line-height: 1.6;             /* 设置 line-height 保证文本垂直居中对齐 */
+    vertical-align: middle;       /* 确保文本和 label 对齐 */
+}
+
+
+
+/* 提交按钮 */
+.query-form .form-actions {
+    text-align: right;
+}
+
+.query-form .btn-green {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.query-form .btn-green:hover {
+    background-color: #388E3C;
+}
+
+
+/* 表格容器样式，允许滚动 */
+.table-container {
+    flex-grow: 1;                 /* 填充剩余空间 */
+    overflow-y: auto;             /* 超出部分显示滚动条 */
+    max-height: 400px; /* 设定最大高度，减去盒子的内边距空间 */
+}
+
+/* 表格样式 */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin-top: 0;            /* 设置表格与盒子顶部的距离 */
+}
+
+/* 表头样式 */
+.styled-table thead th {
+    background-color: #28a745;  /* 绿色背景 */
+    color: white;               /* 白色文字 */
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;     /* 确保文本垂直居中 */
+}
+
+/* 表格内容样式 */
+.styled-table tbody tr:nth-child(odd) {
+    background-color: #f8f9fa;  /* 浅灰色背景 */
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: white;    /* 白色背景 */
+}
+
+/* 单元格内容对齐和间距 */
+.styled-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;     /* 确保文本垂直居中 */
+}
+
+/* 鼠标悬停行高亮 */
+.styled-table tbody tr:hover {
+    background-color: #d4edda;
+}
+
+/* 遮罩层样式 */
+#Mask {
+    width: 100%; /* 您可以根据需要调整宽度 */
+    height: 101%; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: rgba(0, 0, 0, 0.8); /* 半透明背景色 */
+    color: white;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 900; /* 确保其z-index高于其他元素 */
+}
+
+/* 新添加的CSS规则 */
+#DetailBox {
+    width: 1000px; /* 您可以根据需要调整宽度 */
+    height: 650px; /* 您可以根据需要调整高度 */
+    position: fixed; /* 使用fixed定位使其覆盖在其他内容之上 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 使用transform使其居中 */
+    background-color: white; /* 半透明背景色 */
+    color: black;
+    display: none; /* 初始状态为隐藏 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000; /* 确保其z-index高于其他元素 */
+    /* 可以根据需要添加更多样式 */
+}
+
+/* 绿色栏样式 */
+.top-bar {
+    background-color: #28a745; /* 绿色背景 */
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between; /* 左右分布 */
+    align-items: center;
+}
+
+.top-bar .title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 按钮容器 */
+.button-container {
+    display: flex;
+    gap: 15px; /* 控制按钮之间的间距 */
+}
+
+/* 按钮样式 */
+.btn-approve {
+    background-color: green; /* 绿色 */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-approve:hover {
+    background-color: #218838; /* 按钮悬停效果 */
+}
+
+.btn-reject {
+    background-color: #dc3545; /* 红色 */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-reject:hover {
+    background-color: #c82333; /* 按钮悬停效果 */
+}
+
+/* 盒子内容 */
+.detail-content {
+    display: flex;
+    flex-wrap: wrap;  /* 允许子元素换行 */
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;  /* 为了不让内容紧贴绿色栏 */
+}
+
+/* 每一项的样式 */
+.detail-item {
+    display: flex;
+    align-items: center;
+    width: 48%;  /* 限制每个 item 的宽度，占据 48% */
+    margin-bottom: 10px; /* 控制每个项之间的间距 */
+}
+
+/* 标签的样式 */
+.detail-item .label {
+    font-weight: bold;
+    margin-right: 10px;  /* 给标签和值之间添加间距 */
+    flex-shrink: 0;  /* 防止标签被压缩 */
+    width: 120px; /* 限制标签宽度 */
+    text-align: right; /* 让标签右对齐 */
+}
+
+/* 值的样式 */
+.detail-item .value {
+    font-style: italic;
+    color: #555;
+    flex-grow: 1; /* 剩余空间由值占据 */
+    text-align: left; /* 值左对齐 */
+}
+
+
+/* 复核意见的盒子样式 */
+.review-box {
+    width: 92%;  /* 盒子的宽度占据父容器的80% */
+    height: 15%;
+    border: 1px solid #ccc; /* 盒子边框 */
+    padding: 10px; /* 内边距 */
+    margin-top: 20px; /* 给盒子和复核意见标签之间添加间距 */
+    margin-left: auto;  /* 水平居中 */
+    margin-right: auto; /* 水平居中 */
+    box-sizing: border-box; /* 确保边框不会影响盒子的整体宽度 */
+    font-style: italic;
+    color: #555;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+/* 薪酬标准列表 */
+#detail-salaryList {
+    width: 92%;
+    margin: 30px auto;
+    max-height: 300px;  /* 设置最大高度 */
+    overflow-y: auto;   /* 启用垂直滚动条 */
+}
+
+#detail-salaryItems {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#detail-salaryItems th, #detail-salaryItems td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+#detail-salaryItems th {
+    background-color: #28a745;
+    color: white;
+}
+
+#detail-salaryItems td {
+    background-color: #fff;
+}

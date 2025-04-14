@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理模块主页</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航栏样式 */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 角色显示横条 */
+        .role-bar {
+            text-align: center;
+            background-color: #e8f5e9;
+            color: #388E3C;
+            padding: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* 主体内容样式 */
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .module-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .module {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .module h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .module p {
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0 20px;
+        }
+
+        .action-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background-color: #388E3C;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .module {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-info {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<script>
+    // 退出登录逻辑
+    async function logoutUser() {
+        try {
+            const response = await fetch("/user/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                alert("退出成功！");
+                // 跳转到登录页面
+                window.location.href = "/public/login.html";
+            } else {
+                alert("退出失败，请稍后重试！");
+            }
+        } catch (error) {
+            console.error("退出失败:", error);
+            alert("退出失败，请稍后重试！");
+        }
+    }
+
+    function navigateToModule(module) {
+    switch (module) {
+        case 'hr':
+            window.location.href = "http://121.43.159.232:8081/hr-management.html";
+            break;
+        case 'payroll':
+            window.location.href = "http://121.43.159.232:8082/static/html/salary-functions.html";
+            break;
+        case 'admin':
+            window.location.href = "/private/admin-functions.html";
+            break;
+        default:
+            alert("模块未找到！");
+    }
+}
+
+</script>
+<body>
+<div class="main-container">
+    <!-- 顶部导航栏 -->
+    <header class="top-nav">
+        <div class="logo">人力资源管理系统</div>
+        <div class="user-info">
+            <button class="logout-btn" onclick="logoutUser()">退出</button>
+        </div>
+    </header>
+
+
+
+    <!-- 主体内容区域 -->
+    <main class="content">
+        <div class="module-grid">
+            <div class="module">
+                <h3>人力资源档案管理</h3>
+                <p>管理员工的档案信息，包括登记、更新、查询和删除。</p>
+                <button class="action-btn" onclick="navigateToModule('hr')">进入模块</button>
+            </div>
+            <div class="module">
+                <h3>薪酬管理</h3>
+                <p>管理员工的薪酬标准和发放记录。</p>
+                <button class="action-btn" onclick="navigateToModule('payroll')">进入模块</button>
+            </div>
+            <div class="module">
+                <h3>系统管理</h3>
+                <p>设置角色权限、组织机构和其他系统参数。</p>
+                <button class="action-btn" onclick="navigateToModule('admin')">进入模块</button>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

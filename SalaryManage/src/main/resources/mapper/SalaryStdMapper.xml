@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.salarymanage.mapper.SalaryStdMapper">
+    <!--SQL语句-->
+
+    <!--创建预定薪资标准-->
+    <insert id="createId">
+        insert into salarystd(sname, total, maker, register, stime, checker)
+        value(null, null, null, null, null, null)
+    </insert>
+
+    <!--获取预定薪资标准的id-->
+    <select id="getId" resultType="Integer">
+        select MAX(sid)
+        from salarystd
+    </select>
+
+    <!--发起增加薪资标准的复核-->
+    <insert id="addSalaryStd">
+        insert into checksalarystd(sid, sname, total, maker, register, stime, opinion, variety, checked)
+        value(#{sid}, #{sname}, IFNULL(#{total},0), #{maker}, #{register}, CURDATE(), #{opinion}, 1, 0)
+    </insert>
+
+    <!--发起修改薪资标准的复核-->
+    <insert id="modifySalaryStd">
+        insert into checksalarystd(sid, sname, total, maker, register, stime, opinion, variety, checked)
+        value(#{sid}, #{sname}, #{total}, #{maker}, #{register}, CURDATE(), #{opinion}, 2, 0)
+    </insert>
+
+    <!--发起删除薪资标准的复核-->
+    <insert id="removeSalaryStd">
+        insert into checksalarystd(sid, opinion, variety, checked)
+        value(#{sid}, #{opinion}, 3, 0)
+    </insert>
+
+    <!--获取薪资标准-->
+    <select id="getSalaryStd" resultType="com.example.salarymanage.pojo.SalaryStd">
+        select *
+        from salarystd
+        where checker is not null
+        <if test="sid != null and sid != ''">
+            and sid = #{sid}
+        </if>
+        <if test="key != null and key != ''">
+            and (sname like CONCAT('%',#{key},'%') or maker like CONCAT('%',#{key},'%') or register like CONCAT('%',#{key},'%') or checker like CONCAT('%',#{key},'%'))
+        </if>
+        <if test="start_time != null">
+            and stime >= #{start_time}
+        </if>
+        <if test="end_time != null">
+            and #{end_time} >= stime
+        </if>
+
+    </select>
+
+    <!--获取薪资标准-->
+    <select id="getAllSidAndSname" resultType="com.example.salarymanage.parameter.SidAndSname">
+        select sid, sname
+        from salarystd
+        where checker is not null
+    </select>
+
+
+</mapper>

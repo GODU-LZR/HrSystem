@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.salarymanage.mapper.IssueSalaryMapper">
+    <!--SQL语句-->
+
+    <!--返回新增的部门薪酬登记表dpid-->
+    <select id="getNewIssueSalaryInDepartment" resultType="Integer">
+            select MAX(dpid) from departmentpayroll;
+    </select>
+
+    <!--登记部门登记薪酬表-->
+    <insert id="addIssueSalaryInDepartment">
+        insert into departmentpayroll(onedepartment, twodepartment, threedepartment, number, dtime, register, checked)
+        value(#{onedepartment}, #{twodepartment}, #{threedepartment}, #{number}, CURDATE(), #{register}, 0)
+    </insert>
+
+    <!--登记部门员工登记薪酬表-->
+    <insert id="addIssueSalaryInEmployee">
+        insert into employeepayroll(dpid, ename, sid, checked)
+        values
+        <foreach collection="employeePayrolls" item="employeePayroll" separator=",">
+            (#{employeePayroll.dpid}, #{employeePayroll.ename}, #{employeePayroll.sid}, 0)
+        </foreach>
+    </insert>
+
+    <!--修正部门薪酬发放表的薪酬总额-->
+    <update id="updateDepartmentSalary">
+        update departmentpayroll
+        set departmentsalary =
+                (
+                    select SUM(salarystd.total)
+                    from employeepayroll
+                    join salarystd
+                    on salarystd.sid = employeepayroll.sid
+                    where employeepayroll.dpid = #{dpid})
+        where dpid = #{dpid}
+    </update>
+
+    <!--根据部门薪酬登记表id来删除部门员工的薪酬方法表-->
+    <update id="removeIssueSalaryInEmployeeByDpid">
+        update employeepayroll
+        set checked = 1
+        where dpid = #{dpid}
+    </update>
+
+    <!--根据信息获取到部门薪酬登记表-->
+    <select id="getDepartmentPayroll" resultType="com.example.salarymanage.pojo.DepartmentPayroll">
+        select dpid, onedepartment, twodepartment, threedepartment, number, departmentsalary, dtime, register, checked
+        from departmentpayroll
+        <where>
+            <if test="dpid != null">
+                and dpid = #{dpid}
+            </if>
+            <if test="department != null and department != ''">
+                and (onedepartment = #{department} or twodepartment = #{department} or threedepartment = #{department})
+            </if>
+            <if test="register != null and register != ''">
+                and register = #{register}
+            </if>
+            <if test="checked != null">
+                and checked = #{checked}
+            </if>
+        </where>
+    </select>
+
+    <!--根据部门薪酬登记表id获取到部门员工的薪酬发放表-->
+    <select id="getIssueSalaryInEmployeeByDpid" resultType="com.example.salarymanage.pojo.EmployeePayroll">
+        select employeepayroll.epid, employeepayroll.ename, salarystd.total
+        from employeepayroll, salarystd
+        where employeepayroll.sid = salarystd.sid and employeepayroll.dpid = #{dpid}
+    </select>
+
+    <!--修改部门薪酬登记表的复核状态-->
+    <update id="modifyIssueSalaryInDepartment">
+        update departmentpayroll
+        set checked = #{checked}
+        where dpid = #{dpid}
+    </update>
+</mapper>
