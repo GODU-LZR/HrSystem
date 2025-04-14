@@ -1,6 +1,6 @@
 # 人力资源管理系统
 
-![](..\document\image\9.png)
+![](\image\9.png)
 
 ![](..\document\image\10.png)
 
