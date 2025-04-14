@@ -2,45 +2,45 @@
 
 ![](image/9.png)
 
-![](..\document\image\10.png)
+![](image/10.png)
 
-![](..\document\image\11.png)
+![](image/11.png)
 
-![](..\document\image\12.png)
+![](image/12.png)
 
-![](..\document\image\13.png)
+![](image/13.png)
 
-![](..\document\image\14.png)
+![](image/14.png)
 
-![](..\document\image\15.png)
+![](image/15.png)
 
-![](..\document\image\16.png)
+![](image/16.png)
 
-![](..\document\image\17.png)
+![](image/17.png)
 
-![](..\document\image\18.png)
+![](image/18.png)
 
-![](..\document\image\19.png)
+![](image/19.png)
 
-![](..\document\image\20.png)
+![](image/20.png)
 
-![](..\document\image\21.png)
+![](image/21.png)
 
-![](..\document\image\22.png)
+![](image/22.png)
 
-![](..\document\image\23.png)
+![](image/23.png)
 
-![](..\document\image\24.png)
+![](image/24.png)
 
-![](..\document\image\25.png)
+![](image/25.png)
 
-![](..\document\image\26.png)
+![](image/26.png)
 
-![](..\document\image\27.png)
+![](image/27.png)
 
-![](..\document\image\28.png)
+![](image/28.png)
 
-![](..\document\image\29.png)
+![](image/29.png)
 
 ## 系统需求
 
@@ -75,7 +75,7 @@
 这些模块使用Feign客户端进行通信，共享一个MySQL数据库，并通过JDBC Session实现会话共享。
 
 #### 组织结构图
-![](..\document\image\2.png)
+![](/image/2.png)
 
 ---
 
@@ -161,9 +161,9 @@
 **POJO 类**
 - 定义实体类，如User、Employee、PositionInfo、Organization。
 
-![](..\document\image\3.png)
+![](/image/3.png)
 
-![](..\document\image\4.png)
+![](/image/4.png)
 
 ---
 
@@ -194,9 +194,9 @@
 3. 如果用户权限不足，则返回403错误。
 4. 否则继续执行控制器逻辑。
 
-![](..\document\image\5.png)
+![](/image/5.png)
 
-![](..\document\image\6.png)
+![](/image/6.png)
 
 ---
 
@@ -220,7 +220,7 @@
 
 ### 5、集成Swagger API测试文档
 
-![](..\document\image\8.png)
+![](/image/8.png)
 
 ---
 
@@ -277,7 +277,7 @@ services:
       - "8082:8082"
 ```
 
-![](..\document\image\7.png)
+![](/image/7.png)
 
 ---
 
